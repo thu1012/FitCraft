@@ -1,6 +1,7 @@
 package com.cs407.fitcraft;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,28 +42,30 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view = convertView;
-        if(view == null) {
+        if (view == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.exercise_layout, null);
         }
 
-        TextView exercise = view.findViewById(R.id.exerciseLayoutName);
+        TextView exercise = view.findViewById(R.id.exerciseLayoutExerciseName);
         exercise.setText(exerciseList.get(position));
 
         Button btn = view.findViewById(R.id.exerciseLayoutBtn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO
+                if (pageName.equals("newWorkout")) {
+                    exerciseList.remove(position);
+                } else if (pageName.equals("addExercise")) {
+                    Intent intent = new Intent(context, NewWorkoutActivity.class);
+                    context.startActivity(intent);
+                }
             }
         });
-        switch(pageName) {
-            case "newWorkout":
-                btn.setText("-");
-                break;
-            case "addExercise":
-                btn.setText("+");
-                break;
+        if (pageName.equals("newWorkout")) {
+            btn.setText("Remove");
+        } else if (pageName.equals("addExercise")) {
+            btn.setText("Add");
         }
         return view;
     }

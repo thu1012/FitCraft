@@ -13,8 +13,7 @@
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-    </android.widget.SearchView>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@+id/addExerciseListView"
@@ -24,6 +23,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addExerciseSearchView"/>
+        app:layout_constraintTop_toBottomOf="@+id/addExerciseSearchView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,16 +20,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="new workout"
-            android:onClick="mainNewWorkoutBtnHandler"/>
+            android:onClick="mainNewWorkoutBtnHandler"
+            android:text="new workout" />
 
         <Button
             android:id="@+id/mainAddExerciseBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="add exercise"
-            android:onClick="mainAddExerciseBtnHandler"/>
+            android:onClick="mainAddExerciseBtnHandler"
+            android:text="add exercise" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
