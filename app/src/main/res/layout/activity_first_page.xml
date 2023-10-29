@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Your Workout 1"
+        android:text="Your Workouts"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,22 +33,24 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="75dp"
-        android:layout_marginBottom="42dp"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/createButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
+        android:id="@+id/createButton"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="60dp"
+        android:backgroundTint="#505050"
         android:text="Create"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        android:backgroundTint="#505050"
         app:layout_constraintTop_toBottomOf="@+id/ListofWorkouts" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
