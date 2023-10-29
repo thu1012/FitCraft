@@ -13,6 +13,9 @@
         android:theme="@style/Theme.FitCraft"
         tools:targetApi="31">
         <activity
+            android:name=".ExerciseDetails"
+            android:exported="true" />
+        <activity
             android:name=".ExerciseAdapter"
             android:exported="true" />
         <activity
