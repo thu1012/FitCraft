@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "com.cs407.fitcraft"
-    compileSdk = 34
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.cs407.fitcraft"
