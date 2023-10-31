@@ -13,14 +13,4 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
-
-    public void mainNewWorkoutBtnHandler(View view) {
-        Intent intent = new Intent(this, NewWorkoutActivity.class);
-        startActivity(intent);
-    }
-
-    public void mainAddExerciseBtnHandler(View view) {
-        Intent intent = new Intent(this, AddExerciseActivity.class);
-        startActivity(intent);
-    }
 }

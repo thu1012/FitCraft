@@ -20,5 +20,10 @@ public class AddExerciseActivity extends AppCompatActivity {
         exerciseList = new ArrayList<>(Arrays.asList("Found Exercise 1,Found Exercise 2,Found Exercise 3,Found Exercise 4,Found Exercise 5,Found Exercise 6,Found Exercise 7,Found Exercise 8,Found Exercise 9".split(",")));
         exerciseListView = findViewById(R.id.addExerciseListView);
         exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "addExercise"));
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Add Exercise");
+        }
     }
 }
