@@ -8,7 +8,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity {
+public class WorkoutPlay extends AppCompatActivity {
     ArrayList<String> exerciseList;
     ListView exerciseListView;
 
