@@ -82,4 +82,3 @@ public class ExerciseAdapter extends BaseAdapter implements ListAdapter {
         return convertView;
     }
 }
-
