@@ -16,6 +16,12 @@
             android:name=".FirstPage"
             android:exported="false" />
         <activity
+            android:name=".ExerciseDetails"
+            android:exported="false" />
+        <activity
+            android:name=".ExerciseAdapter"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
