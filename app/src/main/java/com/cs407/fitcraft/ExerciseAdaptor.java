@@ -57,7 +57,8 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
                 if (pageName.equals("newWorkout")) {
                     exerciseList.remove(position);
                 } else if (pageName.equals("addExercise")) {
-                    Intent intent = new Intent(context, NewWorkoutActivity.class);
+                    Intent intent = new Intent(context, ExerciseDetails.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
             }

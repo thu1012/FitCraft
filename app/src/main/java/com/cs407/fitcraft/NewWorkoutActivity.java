@@ -2,8 +2,11 @@ package com.cs407.fitcraft;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +14,10 @@ import java.util.Arrays;
 public class NewWorkoutActivity extends AppCompatActivity {
     ArrayList<String> exerciseList;
     ListView exerciseListView;
+
+    Button newWorkoutAddBtn;
+
+    Button newWorkoutDoneBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,5 +32,19 @@ public class NewWorkoutActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("*New Workout*");
         }
+
+        newWorkoutAddBtn = findViewById(R.id.newWorkoutAddBtn);
+        newWorkoutAddBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(NewWorkoutActivity.this, AddExerciseActivity.class);
+            startActivity(intent);
+            finish();
+        });
+
+        newWorkoutDoneBtn = findViewById(R.id.newWorkoutDoneBtn);
+        newWorkoutDoneBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(NewWorkoutActivity.this, FirstPage.class);
+            startActivity(intent);
+            finish();
+        });
     }
 }
