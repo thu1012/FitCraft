@@ -60,13 +60,19 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
                     Intent intent = new Intent(context, ExerciseDetails.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
+                } else if (pageName.equals("firstPage")) {
+                    Intent intent = new Intent(context, WorkoutPlay.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
                 }
             }
         });
         if (pageName.equals("newWorkout")) {
             btn.setText("Remove");
         } else if (pageName.equals("addExercise")) {
-            btn.setText("Add");
+            btn.setText("Details");
+        } else if (pageName.equals("firstPage")){
+            btn.setText("Play Workout");
         }
         return view;
     }

@@ -2,29 +2,25 @@ package com.cs407.fitcraft;
 
 import android.view.View;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 // ExerciseAdapter.java
 
-public class ExerciseAdapter extends BaseAdapter implements ListAdapter {
+public class WorkoutPlayAdaptor extends BaseAdapter implements ListAdapter {
 
     private List<String> exercises;
     private Context context;
     private String type;
 
-    public ExerciseAdapter(List<String> exercises, Context context, String type) {
+    public WorkoutPlayAdaptor(List<String> exercises, Context context, String type) {
         this.exercises = exercises;
         this.context = context;
         this.type = type;

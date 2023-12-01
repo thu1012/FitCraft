@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
@@ -20,9 +21,14 @@ public class WorkoutPlay extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout_play);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("*Play Workout*");
+        }
+
         exerciseList = new ArrayList<>(Arrays.asList("Exercise 1,Exercise 2,Exercise 3,Exercise 4,Exercise 5,Exercise 6,Exercise 7,Exercise 8,Exercise 9".split(",")));
         exerciseListView = findViewById(R.id.ListofWorkouts);
-        exerciseListView.setAdapter(new ExerciseAdapter(exerciseList, getApplicationContext(), "newWorkout"));
+        exerciseListView.setAdapter(new WorkoutPlayAdaptor(exerciseList, getApplicationContext(), "newWorkout"));
 
         returnButton = findViewById(R.id.returnButton);
         returnButton.setOnClickListener(view -> {
@@ -30,5 +36,13 @@ public class WorkoutPlay extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            // Respond to the action bar's Up/Home button
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
