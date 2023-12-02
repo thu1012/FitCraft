@@ -47,8 +47,7 @@ public class ExerciseDetails extends AppCompatActivity {
             }
         });
 
-        // setVideo(videoView, "TestVideo");
-        setVideoByStorage(videoView, "TestVideo");
+        setVideo(videoView, "TestVideo");
     }
 
     @Override
@@ -61,7 +60,7 @@ public class ExerciseDetails extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setVideoByStorage(VideoView videoView, String exerciseName) {
+    public void setVideo(VideoView videoView, String exerciseName) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Exercises").document(exerciseName)
                 .get()
