@@ -4,22 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Application;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.MediaController;
 import android.widget.VideoView;
 
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.mediacodec.DefaultMediaCodecAdapterFactory;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.ui.TrackSelectionView;
-import com.google.android.exoplayer2.upstream.BandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -43,7 +36,16 @@ public class ExerciseDetails extends AppCompatActivity {
             getSupportActionBar().setTitle("*Exercise Name*");
         }
 
-        setVideo(findViewById(R.id.videoView), "TestVideo");
+        VideoView videoView = findViewById(R.id.videoView);
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+            }
+        });
+
+        // setVideo(videoView, "TestVideo");
+        setVideoByStorage(videoView, "TestVideo");
     }
 
     @Override
@@ -56,14 +58,14 @@ public class ExerciseDetails extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void setVideo(VideoView videoView, String exerciseName) {
+    public void setVideoByStorage(VideoView videoView, String exerciseName) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Exercises").document(exerciseName)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             String videoUrl = (String) task.getResult().get("url");
                             FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
                             StorageReference httpsReference = firebaseStorage.getReferenceFromUrl(videoUrl);
@@ -72,10 +74,11 @@ public class ExerciseDetails extends AppCompatActivity {
                                     .addOnCompleteListener(new OnCompleteListener<Uri>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Uri> task) {
-                                            if(task.isSuccessful()) {
-
+                                            if (task.isSuccessful()) {
+                                                Log.i("INFO", "successfully downloaded video");
+                                                setVideoHelper(videoView, task.getResult());
                                             } else {
-
+                                                Log.e("ERROR", "Error downloading video", task.getException());
                                             }
                                         }
                                     });
@@ -84,5 +87,13 @@ public class ExerciseDetails extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    public void setVideoHelper(VideoView videoView, Uri uri) {
+        videoView.setVideoURI(uri);
+        MediaController mediaController = new MediaController(this);
+        mediaController.setAnchorView(videoView);
+        videoView.setMediaController(mediaController);
+        videoView.start();
     }
 }
