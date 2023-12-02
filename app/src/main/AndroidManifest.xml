@@ -22,13 +22,13 @@
             android:name=".NewWorkoutActivity"
             android:exported="false" />
         <activity
-            android:name=".ExerciseDetails"
+            android:name=".FirstPage"
             android:exported="false" />
         <activity
             android:name=".ExerciseAdapter"
             android:exported="false" />
         <activity
-            android:name=".FirstPage"
+            android:name=".ExerciseDetails"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
