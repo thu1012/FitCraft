@@ -30,10 +30,10 @@
             android:name=".NewWorkoutActivity"
             android:exported="false" />
         <activity
-            android:name=".ExerciseDetails"
+            android:name=".WorkoutPlayAdaptor"
             android:exported="false" />
         <activity
-            android:name=".WorkoutPlayAdaptor"
+            android:name=".ExerciseDetails"
             android:exported="false" />
         <activity
             android:name=".WorkoutPlay"
