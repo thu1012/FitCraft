@@ -23,12 +23,17 @@
         </activity>
 
         <!-- Other Activities -->
+
+        <activity
+            android:name=".NewWorkoutActivity"
+            android:exported="true"
+            android:parentActivityName=".FirstPage"/>
+
+
         <activity
             android:name=".AddExerciseActivity"
             android:exported="false" />
-        <activity
-            android:name=".NewWorkoutActivity"
-            android:exported="false" />
+
         <activity
             android:name=".WorkoutPlayAdaptor"
             android:exported="false" />

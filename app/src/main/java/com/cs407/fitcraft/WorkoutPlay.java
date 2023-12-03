@@ -14,7 +14,6 @@ import java.util.Arrays;
 public class WorkoutPlay extends AppCompatActivity {
     ArrayList<String> exerciseList;
     ListView exerciseListView;
-    ImageButton returnButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,17 +28,12 @@ public class WorkoutPlay extends AppCompatActivity {
         exerciseList = new ArrayList<>(Arrays.asList("Exercise 1,Exercise 2,Exercise 3,Exercise 4,Exercise 5,Exercise 6,Exercise 7,Exercise 8,Exercise 9".split(",")));
         exerciseListView = findViewById(R.id.ListofWorkouts);
         exerciseListView.setAdapter(new WorkoutPlayAdaptor(exerciseList, getApplicationContext(), "newWorkout"));
-
-        returnButton = findViewById(R.id.returnButton);
-        returnButton.setOnClickListener(view -> {
-            Intent intent = new Intent(WorkoutPlay.this, FirstPage.class);
-            startActivity(intent);
-            finish();
-        });
     }
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             // Respond to the action bar's Up/Home button
+            Intent intent = new Intent(WorkoutPlay.this, FirstPage.class);
+            startActivity(intent);
             finish();
             return true;
         }
