@@ -2,11 +2,14 @@ package com.cs407.fitcraft;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +17,9 @@ import java.util.Arrays;
 public class AddExerciseActivity extends AppCompatActivity {
     ArrayList<String> exerciseList;
     ListView exerciseListView;
+
+    ArrayAdapter<String> adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +36,14 @@ public class AddExerciseActivity extends AppCompatActivity {
         }
 
     }
+
+
+
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             // Respond to the action bar's Up/Home button
+            Intent intent = new Intent(AddExerciseActivity.this, NewWorkoutActivity.class);
+            startActivity(intent);
             finish();
             return true;
         }
