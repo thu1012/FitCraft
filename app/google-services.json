@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "790717137982",
+    "project_id": "fitcraft-5aee9",
+    "storage_bucket": "fitcraft-5aee9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:790717137982:android:ecc213857940688cde3d6f",
+        "android_client_info": {
+          "package_name": "com.cs407.fitcraft"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA672ho4KYJeLmSNGUidUxlmPc3xyZ7nf4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
