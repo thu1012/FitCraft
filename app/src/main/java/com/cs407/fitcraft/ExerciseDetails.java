@@ -16,6 +16,8 @@ public class ExerciseDetails extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("*Exercise Name*");
         }
+
+
     }
 
     @Override

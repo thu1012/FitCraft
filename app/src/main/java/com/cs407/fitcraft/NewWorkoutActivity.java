@@ -1,5 +1,7 @@
 package com.cs407.fitcraft;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
@@ -47,11 +49,47 @@ public class NewWorkoutActivity extends AppCompatActivity {
         });
 
         newWorkoutDoneBtn = findViewById(R.id.newWorkoutDoneBtn);
-        newWorkoutDoneBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(NewWorkoutActivity.this, FirstPage.class);
-            startActivity(intent);
-            finish();
+        newWorkoutAddBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(NewWorkoutActivity.this, AddExerciseActivity.class);
+            exerciseDetailsLauncher.launch(intent);
         });
+    }
+
+    private ActivityResultLauncher<Intent> exerciseDetailsLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    Intent data = result.getData();
+                    // Handle the result as before
+                    handleExerciseDetailsResult(data);
+                }
+            }
+    );
+
+    private void handleExerciseDetailsResult(Intent data) {
+        if (data != null) {
+            // Get the exercise name from the result
+            String exerciseName = data.getStringExtra("exerciseName");
+
+            // Add the exercise name to the list
+            exerciseList.add(exerciseName);
+            // Notify the adapter that the data set has changed
+            ((ExerciseAdaptor) exerciseListView.getAdapter()).notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            // Get the exercise name from the result
+            String exerciseName = data.getStringExtra("exerciseName");
+
+            // Add the exercise name to the list
+            exerciseList.add(exerciseName);
+            // Notify the adapter that the data set has changed
+            ((ExerciseAdaptor) exerciseListView.getAdapter()).notifyDataSetChanged();
+        }
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {

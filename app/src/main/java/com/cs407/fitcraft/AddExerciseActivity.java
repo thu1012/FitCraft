@@ -62,6 +62,13 @@ public class AddExerciseActivity extends AppCompatActivity {
                 Log.e("AddExerciseActivity", "Error loading exercises", e);
             }
         });
+        exerciseListView.setOnItemClickListener((adapterView, view, position, id) -> {
+            String exerciseName = exerciseList.get(position);
+
+            Intent intent = new Intent(AddExerciseActivity.this, ExerciseDetails.class);
+            intent.putExtra("exerciseName", exerciseName);
+            startActivity(intent);
+        });
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
