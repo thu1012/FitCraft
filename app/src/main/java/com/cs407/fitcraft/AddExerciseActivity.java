@@ -5,11 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
+
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,26 +21,48 @@ public class AddExerciseActivity extends AppCompatActivity {
     ArrayList<String> exerciseList;
     ListView exerciseListView;
 
-    ArrayAdapter<String> adapter;
-
+    ExerciseAdaptor adapter;
+    DatabaseHelper databaseHelper = new DatabaseHelper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_exercise);
 
-        exerciseList = new ArrayList<>(Arrays.asList("Found Exercise 1,Found Exercise 2,Found Exercise 3,Found Exercise 4,Found Exercise 5,Found Exercise 6,Found Exercise 7,Found Exercise 8,Found Exercise 9".split(",")));
+        // Initialize exercise list
+        exerciseList = new ArrayList<>();
+
+        // Initialize ListView and Adapter
         exerciseListView = findViewById(R.id.addExerciseListView);
-        exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "addExercise"));
+        adapter = new ExerciseAdaptor(exerciseList, getApplicationContext(), "addExercise");
+        exerciseListView.setAdapter(adapter);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Add Exercise");
         }
 
+        // Now load exercises from database
+        loadExercisesFromDatabase();
     }
 
 
+    private void loadExercisesFromDatabase() {
+        databaseHelper.loadExercises(new DatabaseHelper.Callback<ArrayList<String>>() {
+            @Override
+            public void onSuccess(ArrayList<String> result) {
+                exerciseList.clear();
+                exerciseList.addAll(result);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // Handle any errors here
+                Log.e("AddExerciseActivity", "Error loading exercises", e);
+            }
+        });
+    }
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

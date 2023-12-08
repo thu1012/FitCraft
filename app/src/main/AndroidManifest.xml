@@ -29,7 +29,6 @@
             android:exported="true"
             android:parentActivityName=".FirstPage"/>
 
-
         <activity
             android:name=".AddExerciseActivity"
             android:exported="false" />
