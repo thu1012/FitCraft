@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class NewWorkoutActivity extends AppCompatActivity {
-    ArrayList<Exercise> exerciseList;
+    ArrayList<String> exerciseList;
     ListView exerciseListView;
 
     Button newWorkoutAddBtn;

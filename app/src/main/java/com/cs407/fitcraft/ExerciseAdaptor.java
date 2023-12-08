@@ -2,6 +2,7 @@ package com.cs407.fitcraft;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +14,16 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
-    private ArrayList<Exercise> exerciseList;
+    private ArrayList<String> exerciseList;
     private Context context;
     private String pageName;
+    private DatabaseHelper databaseHelper;
 
-    public ExerciseAdaptor(ArrayList<Exercise> exerciseList, Context context, String pageName) {
+    public ExerciseAdaptor(ArrayList<String> exerciseList, Context context, String pageName) {
         this.exerciseList = exerciseList;
         this.context = context;
         this.pageName = pageName;
+        this.databaseHelper = new DatabaseHelper();
     }
 
     @Override
@@ -48,7 +51,17 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
         }
 
         TextView exercise = view.findViewById(R.id.exerciseLayoutExerciseName);
-        exercise.setText(exerciseList.get(position).name);
+        databaseHelper.getExercise(exerciseList.get(position), new DatabaseHelper.Callback<Exercise>() {
+            @Override
+            public void onSuccess(Exercise result) {
+                exercise.setText(result.name);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("ExerciseAdaptor", "Error getting exercise", e);
+            }
+        });
 
         Button btn = view.findViewById(R.id.exerciseLayoutBtn);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +74,7 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
                     notifyDataSetChanged();
                 } else if (pageName.equals("addExercise")) {
                     Intent intent = new Intent(context, ExerciseDetails.class);
-                    intent.putExtra("exerciseName", exerciseList.get(position).documentName);
+                    intent.putExtra("exerciseName", exerciseList.get(position));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 } else if (pageName.equals("firstPage")) {

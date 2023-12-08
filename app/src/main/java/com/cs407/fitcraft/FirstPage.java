@@ -13,7 +13,7 @@ import java.util.Arrays;
 
 public class FirstPage extends AppCompatActivity {
     Button createButton;
-    ArrayList<Exercise> exerciseList;
+    ArrayList<String> exerciseList;
     ListView exerciseListView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
