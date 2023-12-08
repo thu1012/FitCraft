@@ -13,11 +13,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
-    private ArrayList<String> exerciseList;
+    private ArrayList<Exercise> exerciseList;
     private Context context;
     private String pageName;
 
-    public ExerciseAdaptor(ArrayList<String> exerciseList, Context context, String pageName) {
+    public ExerciseAdaptor(ArrayList<Exercise> exerciseList, Context context, String pageName) {
         this.exerciseList = exerciseList;
         this.context = context;
         this.pageName = pageName;
@@ -48,7 +48,7 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
         }
 
         TextView exercise = view.findViewById(R.id.exerciseLayoutExerciseName);
-        exercise.setText(exerciseList.get(position));
+        exercise.setText(exerciseList.get(position).name);
 
         Button btn = view.findViewById(R.id.exerciseLayoutBtn);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +61,7 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
                     notifyDataSetChanged();
                 } else if (pageName.equals("addExercise")) {
                     Intent intent = new Intent(context, ExerciseDetails.class);
+                    intent.putExtra("exerciseName", exerciseList.get(position).documentName);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 } else if (pageName.equals("firstPage")) {

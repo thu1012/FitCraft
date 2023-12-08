@@ -12,14 +12,17 @@ public class DatabaseHelper {
         db = FirebaseFirestore.getInstance();
     }
 
-    public void loadExercises(final Callback<ArrayList<String>> callback) {
+    public void loadExercises(final Callback<ArrayList<Exercise>> callback) {
         db.collection("Exercises")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        ArrayList<String> exercises = new ArrayList<>();
+                        ArrayList<Exercise> exercises = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            exercises.add(document.getString("name"));
+                            String name = document.getString("name");
+                            String description = document.getString("description");
+                            String videoUrl = document.getString("url");
+                            exercises.add(new Exercise(name, description, videoUrl, document.getId()));
                         }
                         callback.onSuccess(exercises);
                     } else {
