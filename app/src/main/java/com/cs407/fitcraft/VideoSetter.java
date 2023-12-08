@@ -1,6 +1,7 @@
 package com.cs407.fitcraft;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.MediaController;
@@ -16,7 +17,25 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class VideoSetter {
-    public void setVideo(VideoView videoView, String exerciseName, Context context) {
+    private VideoView videoView;
+    public VideoSetter(VideoView videoView, Context context) {
+        this.videoView = videoView;
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+                mp.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+                    @Override
+                    public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+                        MediaController mc = new MediaController(context);
+                        videoView.setMediaController(mc);
+                        mc.setAnchorView(videoView);
+                    }
+                });
+            }
+        });
+    }
+    public void setVideo(String exerciseName, Context context) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Exercises").document(exerciseName)
                 .get()

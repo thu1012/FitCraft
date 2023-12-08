@@ -13,14 +13,14 @@ import java.util.Arrays;
 
 public class FirstPage extends AppCompatActivity {
     Button createButton;
-    ArrayList<String> exerciseList;
+    ArrayList<Exercise> exerciseList;
     ListView exerciseListView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_page);
 
-        exerciseList = new ArrayList<>(Arrays.asList("Workout 1,Workout 2,Workout 3,Workout 4,Workout 5,Workout 6,Workout 7,Workout 8,Workout 9".split(",")));
+        exerciseList = new ArrayList<>();
         exerciseListView = findViewById(R.id.ListofWorkouts);
         exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "firstPage"));
 

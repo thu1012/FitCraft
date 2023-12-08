@@ -34,9 +34,9 @@ public class ExerciseDetails extends AppCompatActivity {
             getSupportActionBar().setTitle("*"+exerciseName+"*");
         }
 
-        VideoSetter videoSetter = new VideoSetter();
         VideoView videoView = findViewById(R.id.exerciseDetailsVideoView);
-        videoSetter.setVideo(videoView, exerciseName, this);
+        VideoSetter videoSetter = new VideoSetter(videoView, this);
+        videoSetter.setVideo(exerciseName, this);
     }
 
     @Override
