@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AddExerciseActivity extends AppCompatActivity {
-    ArrayList<Exercise> exerciseList;
+    ArrayList<String> exerciseList;
     ListView exerciseListView;
 
     ExerciseAdaptor adapter;
@@ -48,9 +48,9 @@ public class AddExerciseActivity extends AppCompatActivity {
 
 
     private void loadExercisesFromDatabase() {
-        databaseHelper.loadExercises(new DatabaseHelper.Callback<ArrayList<Exercise>>() {
+        databaseHelper.loadExercises(new DatabaseHelper.Callback<ArrayList<String>>() {
             @Override
-            public void onSuccess(ArrayList<Exercise> result) {
+            public void onSuccess(ArrayList<String> result) {
                 exerciseList.clear();
                 exerciseList.addAll(result);
                 adapter.notifyDataSetChanged();

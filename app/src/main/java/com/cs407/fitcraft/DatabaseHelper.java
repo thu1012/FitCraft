@@ -1,5 +1,8 @@
 package com.cs407.fitcraft;
 
+import android.util.Log;
+
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -12,22 +15,36 @@ public class DatabaseHelper {
         db = FirebaseFirestore.getInstance();
     }
 
-    public void loadExercises(final Callback<ArrayList<Exercise>> callback) {
+    public void loadExercises(final Callback<ArrayList<String>> callback) {
         db.collection("Exercises")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        ArrayList<Exercise> exercises = new ArrayList<>();
+                        ArrayList<String> exercises = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            String name = document.getString("name");
-                            String description = document.getString("description");
-                            String videoUrl = document.getString("url");
-                            exercises.add(new Exercise(name, description, videoUrl, document.getId()));
+                            exercises.add(document.getId());
                         }
                         callback.onSuccess(exercises);
                     } else {
                         callback.onError(task.getException());
                     }
+                });
+    }
+
+    public void getExercise(String exerciseId, final Callback<Exercise> callback) {
+        db.collection("Exercises").document(exerciseId)
+                .get()
+                .addOnCompleteListener(task -> {
+                   if(task.isSuccessful()) {
+                       DocumentSnapshot snapshot = task.getResult();
+                       String name = (String) snapshot.get("name");
+                       String description = (String) snapshot.get("description");
+                       String url = (String) snapshot.get("url");
+                       Exercise exercise = new Exercise(name, description, url, exerciseId);
+                       callback.onSuccess(exercise);
+                   } else {
+                       callback.onError(task.getException());
+                   }
                 });
     }
 
