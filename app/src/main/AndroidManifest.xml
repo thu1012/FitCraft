@@ -14,7 +14,7 @@
 
         <!-- WorkoutPlay Activity -->
         <activity
-            android:name=".WorkoutPlay"
+            android:name=".FirstPage"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,7 +40,7 @@
             android:name=".ExerciseDetails"
             android:exported="false" />
         <activity
-            android:name=".FirstPage"
+            android:name=".WorkoutPlay"
             android:exported="true" />
     </application>
 </manifest>

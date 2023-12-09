@@ -79,7 +79,7 @@ public class WorkoutPlayAdaptor extends BaseAdapter implements ListAdapter {
         playPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                VideoHelper localVideoHelper = new VideoHelper(videoView, false, progressBar, activity);
+                VideoHelper localVideoHelper = new VideoHelper(videoView, false, progressBar, activity, position);
                 // Handle play/pause actions here.
                 // For now, let's toggle the image between play and pause as an example:
                 if ("pause".equals(v.getTag())) {
@@ -93,7 +93,7 @@ public class WorkoutPlayAdaptor extends BaseAdapter implements ListAdapter {
                         @Override
                         public void onSuccess(Exercise result) {
                             localVideoHelper.setVideo(result, activity);
-                            localVideoHelper.startVideo();
+                            localVideoHelper.startVideo(progressBar);
                         }
 
                         @Override
