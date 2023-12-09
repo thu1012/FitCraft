@@ -1,5 +1,7 @@
 package com.cs407.fitcraft;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -46,6 +48,19 @@ public class AddExerciseActivity extends AppCompatActivity {
         loadExercisesFromDatabase();
     }
 
+    private ActivityResultLauncher<Intent> exerciseDetailsLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                Log.d("AddExerciseActivity", "exerciseDetailsLauncher: resultCode = " + result.getResultCode());
+                if (result.getResultCode() == RESULT_OK) {
+                    Intent data = result.getData();
+                    Log.d("AddExerciseActivity", "Returning exercise to NewWorkoutActivity");
+                    setResult(RESULT_OK, data);
+                    finish();
+                }
+            }
+    );
+
 
     private void loadExercisesFromDatabase() {
         databaseHelper.loadExercises(new DatabaseHelper.Callback<ArrayList<String>>() {
@@ -62,12 +77,13 @@ public class AddExerciseActivity extends AppCompatActivity {
                 Log.e("AddExerciseActivity", "Error loading exercises", e);
             }
         });
+
         exerciseListView.setOnItemClickListener((adapterView, view, position, id) -> {
             String exerciseName = exerciseList.get(position);
-
-            Intent intent = new Intent(AddExerciseActivity.this, ExerciseDetails.class);
+            Log.d("AddExerciseActivity", "Launching ExerciseDetails for: " + exerciseName);
+            Intent intent = new Intent(this, ExerciseDetails.class);
             intent.putExtra("exerciseName", exerciseName);
-            startActivity(intent);
+            exerciseDetailsLauncher.launch(intent);
         });
     }
 

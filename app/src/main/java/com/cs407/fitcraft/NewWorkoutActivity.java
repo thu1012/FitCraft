@@ -9,6 +9,7 @@ import androidx.core.app.TaskStackBuilder;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
@@ -55,16 +56,30 @@ public class NewWorkoutActivity extends AppCompatActivity {
         });
     }
 
+//    private ActivityResultLauncher<Intent> exerciseDetailsLauncher = registerForActivityResult(
+//            new ActivityResultContracts.StartActivityForResult(),
+//            result -> {
+//                if (result.getResultCode() == RESULT_OK) {
+//                    Intent data = result.getData();
+//                    // Handle the result as before
+//                    handleExerciseDetailsResult(data);
+//                }
+//            }
+//    );
     private ActivityResultLauncher<Intent> exerciseDetailsLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
+                Log.d("NewWorkoutActivity", "ActivityResultLauncher: resultCode = " + result.getResultCode());
                 if (result.getResultCode() == RESULT_OK) {
                     Intent data = result.getData();
-                    // Handle the result as before
-                    handleExerciseDetailsResult(data);
+                    String exerciseName = data.getStringExtra("exerciseName");
+                    Log.d("NewWorkoutActivity", "Received exercise: " + exerciseName);
+                    exerciseList.add(exerciseName);
+                    ((ExerciseAdaptor)exerciseListView.getAdapter()).notifyDataSetChanged();
                 }
             }
     );
+
 
     private void handleExerciseDetailsResult(Intent data) {
         if (data != null) {
