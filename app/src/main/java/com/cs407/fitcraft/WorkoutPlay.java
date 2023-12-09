@@ -25,9 +25,9 @@ public class WorkoutPlay extends AppCompatActivity {
             getSupportActionBar().setTitle("*Play Workout*");
         }
 
-        exerciseList = new ArrayList<>(Arrays.asList("Exercise 1,Exercise 2,Exercise 3,Exercise 4,Exercise 5,Exercise 6,Exercise 7,Exercise 8,Exercise 9".split(",")));
+        exerciseList = new ArrayList<>(Arrays.asList("TestExercise,TestVideo,TestVideo2".split(",")));
         exerciseListView = findViewById(R.id.ListofWorkouts);
-        exerciseListView.setAdapter(new WorkoutPlayAdaptor(exerciseList, getApplicationContext(), "newWorkout"));
+        exerciseListView.setAdapter(new WorkoutPlayAdaptor(exerciseList, this, findViewById(R.id.workoutPlayVideoView)));
     }
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
