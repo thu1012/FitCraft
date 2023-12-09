@@ -1,22 +1,10 @@
 package com.cs407.fitcraft;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.MediaController;
 import android.widget.VideoView;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 public class ExerciseDetails extends AppCompatActivity {
 
@@ -35,8 +23,8 @@ public class ExerciseDetails extends AppCompatActivity {
         }
 
         VideoView videoView = findViewById(R.id.exerciseDetailsVideoView);
-        VideoSetter videoSetter = new VideoSetter(videoView, this);
-        videoSetter.setVideo(exerciseName, this);
+        VideoHelper videoHelper = new VideoHelper(videoView, true,  this);
+        videoHelper.setVideo(exerciseName, this);
     }
 
     @Override

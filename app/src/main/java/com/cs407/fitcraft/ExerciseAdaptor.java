@@ -79,6 +79,7 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
                     context.startActivity(intent);
                 } else if (pageName.equals("firstPage")) {
                     Intent intent = new Intent(context, WorkoutPlay.class);
+                    intent.putExtra("workoutId", exerciseList.get(position));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }

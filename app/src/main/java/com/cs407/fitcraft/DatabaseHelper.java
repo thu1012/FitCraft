@@ -7,6 +7,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHelper {
     private FirebaseFirestore db;
@@ -45,6 +46,23 @@ public class DatabaseHelper {
                    } else {
                        callback.onError(task.getException());
                    }
+                });
+    }
+
+    public void getWorkout(String workoutId, final Callback<Workout> callback) {
+        db.collection("Workouts").document(workoutId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        DocumentSnapshot snapshot = task.getResult();
+                        String name = (String) snapshot.get("name");
+                        String description = (String) snapshot.get("description");
+                        List<String> exercises = (List<String>) snapshot.get("exercises");
+                        Workout workout = new Workout(name, description, exercises);
+                        callback.onSuccess(workout);
+                    } else {
+                        callback.onError(task.getException());
+                    }
                 });
     }
 
