@@ -49,7 +49,7 @@ public class NewWorkoutActivity extends AppCompatActivity {
         });
 
         newWorkoutDoneBtn = findViewById(R.id.newWorkoutDoneBtn);
-        newWorkoutAddBtn.setOnClickListener(view -> {
+        newWorkoutDoneBtn.setOnClickListener(view -> {
             Intent intent = new Intent(NewWorkoutActivity.this, AddExerciseActivity.class);
             exerciseDetailsLauncher.launch(intent);
         });
@@ -68,26 +68,14 @@ public class NewWorkoutActivity extends AppCompatActivity {
 
     private void handleExerciseDetailsResult(Intent data) {
         if (data != null) {
-            // Get the exercise name from the result
             String exerciseName = data.getStringExtra("exerciseName");
+            // Assuming you get all necessary details to create an Exercise object
+            String description = data.getStringExtra("description");
+            String videoUrl = data.getStringExtra("videoUrl");
+            String documentName = data.getStringExtra("documentName");
 
-            // Add the exercise name to the list
-            exerciseList.add(exerciseName);
-            // Notify the adapter that the data set has changed
-            ((ExerciseAdaptor) exerciseListView.getAdapter()).notifyDataSetChanged();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            // Get the exercise name from the result
-            String exerciseName = data.getStringExtra("exerciseName");
-
-            // Add the exercise name to the list
-            exerciseList.add(exerciseName);
-            // Notify the adapter that the data set has changed
+            Exercise newExercise = new Exercise(exerciseName, description, videoUrl, documentName);
+            exerciseList.add(newExercise);
             ((ExerciseAdaptor) exerciseListView.getAdapter()).notifyDataSetChanged();
         }
     }

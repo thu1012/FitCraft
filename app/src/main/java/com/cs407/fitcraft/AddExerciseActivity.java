@@ -29,10 +29,8 @@ public class AddExerciseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_exercise);
 
-        // Initialize exercise list
         exerciseList = new ArrayList<>();
 
-        // Initialize ListView and Adapter
         exerciseListView = findViewById(R.id.addExerciseListView);
         adapter = new ExerciseAdaptor(exerciseList, getApplicationContext(), "addExercise");
         exerciseListView.setAdapter(adapter);
@@ -41,18 +39,29 @@ public class AddExerciseActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Add Exercise");
         }
-
-        // Now load exercises from database
         loadExercisesFromDatabase();
-    }
 
+        SearchView searchView = findViewById(R.id.addExerciseSearchView);
+        searchView.requestFocus();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+    }
 
     private void loadExercisesFromDatabase() {
         databaseHelper.loadExercises(new DatabaseHelper.Callback<ArrayList<Exercise>>() {
             @Override
             public void onSuccess(ArrayList<Exercise> result) {
-                exerciseList.clear();
-                exerciseList.addAll(result);
+                adapter.updateLists(result);
                 adapter.notifyDataSetChanged();
             }
 
@@ -63,7 +72,7 @@ public class AddExerciseActivity extends AppCompatActivity {
             }
         });
         exerciseListView.setOnItemClickListener((adapterView, view, position, id) -> {
-            String exerciseName = exerciseList.get(position);
+            String exerciseName = exerciseList.get(position).name;
 
             Intent intent = new Intent(AddExerciseActivity.this, ExerciseDetails.class);
             intent.putExtra("exerciseName", exerciseName);

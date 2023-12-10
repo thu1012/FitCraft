@@ -7,30 +7,35 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
+public class ExerciseAdaptor extends BaseAdapter implements ListAdapter, Filterable {
     private ArrayList<Exercise> exerciseList;
+    private ArrayList<Exercise> filteredList;
     private Context context;
     private String pageName;
+    private boolean isFiltered = false;
 
     public ExerciseAdaptor(ArrayList<Exercise> exerciseList, Context context, String pageName) {
         this.exerciseList = exerciseList;
+        this.filteredList = new ArrayList<>(exerciseList); // Initialize with a copy of exerciseList
         this.context = context;
         this.pageName = pageName;
     }
 
     @Override
     public int getCount() {
-        return exerciseList.size();
+        return isFiltered ? filteredList.size() : exerciseList.size();
     }
 
     @Override
     public Object getItem(int pos) {
-        return exerciseList.get(pos);
+        return isFiltered ? filteredList.get(pos) : exerciseList.get(pos);
     }
 
     // TODO: this method need to be updated to use exercise id
@@ -48,7 +53,8 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
         }
 
         TextView exercise = view.findViewById(R.id.exerciseLayoutExerciseName);
-        exercise.setText(exerciseList.get(position).name);
+        Exercise item = isFiltered ? filteredList.get(position) : exerciseList.get(position);
+        exercise.setText(item.name);
 
         Button btn = view.findViewById(R.id.exerciseLayoutBtn);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -79,5 +85,54 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
             btn.setText("Play Workout");
         }
         return view;
+    }
+
+    public void updateLists(ArrayList<Exercise> newExercises) {
+        exerciseList.clear();
+        exerciseList.addAll(newExercises);
+        filteredList.clear();
+        filteredList.addAll(newExercises);
+        isFiltered = false; // Reset the filter
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new FilterResults();
+                if (constraint == null || constraint.length() == 0) {
+                    results.values = exerciseList;
+                    results.count = exerciseList.size();
+                } else {
+                    String searchStr = constraint.toString().toLowerCase();
+                    ArrayList<Exercise> resultsData = new ArrayList<>();
+                    for (Exercise e : exerciseList) {
+                        String s = e.name;
+                        if (s.toLowerCase().contains(searchStr)) {
+                            resultsData.add(e);
+                        }
+                    }
+                    results.values = resultsData;
+                    results.count = resultsData.size();
+                }
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                if (constraint == null || constraint.length() == 0) {
+                    // Filter cleared
+                    filteredList = new ArrayList<>(exerciseList);
+                    isFiltered = false;
+                } else {
+                    // Filter active
+                    filteredList = (ArrayList<Exercise>) results.values;
+                    isFiltered = true;
+                }
+                notifyDataSetChanged();
+            }
+
+        };
     }
 }
