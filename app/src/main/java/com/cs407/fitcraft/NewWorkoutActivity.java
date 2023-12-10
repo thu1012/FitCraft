@@ -9,14 +9,18 @@ import androidx.core.app.TaskStackBuilder;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import android.text.Editable;
+
 
 public class NewWorkoutActivity extends AppCompatActivity {
     ArrayList<String> exerciseList;
@@ -32,10 +36,33 @@ public class NewWorkoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_workout);
 
+        EditText editTextExample = findViewById(R.id.editTextExample);
+        String userEnteredText = editTextExample.getText().toString();
+
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("*New Workout*");
+            getSupportActionBar().setTitle(userEnteredText);
         }
+
+        editTextExample.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
+                // Do something before the text changes (if needed)
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                // Do something when the text changes
+                updateActionBarTitle(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // Do something after the text changes (if needed)
+            }
+        });
+
         exerciseList = new ArrayList<>();
         exerciseListView = findViewById(R.id.newWorkoutExerciseList);
         exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout"));
@@ -54,6 +81,14 @@ public class NewWorkoutActivity extends AppCompatActivity {
             exerciseDetailsLauncher.launch(intent);
         });
     }
+
+    private void updateActionBarTitle(String title) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(title);
+        }
+    }
+
 
     private ActivityResultLauncher<Intent> exerciseDetailsLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),

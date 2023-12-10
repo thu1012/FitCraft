@@ -2,6 +2,7 @@ package com.cs407.fitcraft;
 
 import android.util.Log;
 
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -65,6 +66,59 @@ public class DatabaseHelper {
                     }
                 });
     }
+
+
+    public void getWorkoutList(final Callback<List<Workout>> callback) {
+        db.collection("Workouts")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Workout> workoutList = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String id = document.getString("id");
+                            String description = document.getString("description");
+                            List<String> workouts = (List<String>) document.get("workouts");
+                            Workout workout = new Workout(id, description, workouts);
+                            workoutList.add(workout);
+                        }
+                        callback.onSuccess(workoutList);
+                    } else {
+                        callback.onError(task.getException());
+                    }
+                });
+    }
+
+    public void getWorkoutIdList(final Callback<List<String>> callback) {
+        db.collection("Workouts")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<String> workoutIdList = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String id = document.getString("id");
+                            workoutIdList.add(id);
+                        }
+                        callback.onSuccess(workoutIdList);
+                    } else {
+                        callback.onError(task.getException());
+                    }
+                });
+    }
+
+    public void getExerciseName(String exerciseId, final Callback<String> callback) {
+        db.collection("Exercises").document(exerciseId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        DocumentSnapshot snapshot = task.getResult();
+                        String name = (String) snapshot.get("name");
+                        callback.onSuccess(name);
+                    } else {
+                        callback.onError(task.getException());
+                    }
+                });
+    }
+
 
     // You can add more methods for other operations like loading videos, etc.
 
