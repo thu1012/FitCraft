@@ -24,12 +24,21 @@ public class WorkoutPlayAdaptor extends BaseAdapter implements ListAdapter {
     private DatabaseHelper databaseHelper;
     private VideoView videoView;
 
+
+
     public WorkoutPlayAdaptor(List<String> exercises, Activity activity, VideoView videoView) {
         this.exercises = exercises;
         this.activity = activity;
         databaseHelper = new DatabaseHelper();
         this.videoView = videoView;
     }
+
+    //adaptor for first page
+    public WorkoutPlayAdaptor(Activity activity) {
+        this.activity = activity;
+        databaseHelper = new DatabaseHelper();
+    }
+
 
     @Override
     public int getCount() {

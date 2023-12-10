@@ -3,16 +3,16 @@ package com.cs407.fitcraft;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Workout {
+public class WorkoutList {
     String description, name;
     List<String> exercises;
-    public Workout(String name, String description, List<String> exercises) {
+    public WorkoutList(String name, String description, List<String> exercises) {
         this.name = name;
         this.description = description;
         this.exercises = exercises;
     }
 
-    public Workout(String name) {
-        this.name = name;
+    public WorkoutList(String name, String description) {
+        this(name, description, new ArrayList<>());
     }
 }
