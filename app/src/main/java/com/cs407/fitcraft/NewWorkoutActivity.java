@@ -22,10 +22,9 @@ import java.util.Arrays;
 public class NewWorkoutActivity extends AppCompatActivity {
     ArrayList<String> exerciseList;
     ListView exerciseListView;
-
     Button newWorkoutAddBtn;
-
     Button newWorkoutDoneBtn;
+    DatabaseHelper databaseHelper = new DatabaseHelper();
 
 
     @Override
@@ -37,7 +36,34 @@ public class NewWorkoutActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("*New Workout*");
         }
-        exerciseList = new ArrayList<>();
+
+//        String workoutId = getIntent().getStringExtra("workoutId");
+//        if(workoutId!=null){
+//            databaseHelper.getWorkout(workoutId, new DatabaseHelper.Callback<Workout>() {
+//                @Override
+//                public void onSuccess(Workout result) {
+//                    //exerciseList = new ArrayList<>(Arrays.asList(result));
+//                    exerciseListView = findViewById(R.id.newWorkoutExerciseList);
+//                    exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout"));
+//                }
+//
+//                @Override
+//                public void onError(Exception e) {
+//                    Log.e("Workout Play", "Error loading workout exercises", e);
+//                }
+//            });
+//
+//        } else{
+//            exerciseListView = findViewById(R.id.newWorkoutExerciseList);
+//            exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout"));
+//        }
+
+
+
+        String exerciseName = getIntent().getStringExtra("exerciseName");
+        if(exerciseName==null)  exerciseList = new ArrayList<>();
+        else exerciseList.add(exerciseName);
+
         exerciseListView = findViewById(R.id.newWorkoutExerciseList);
         exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout"));
 
@@ -45,18 +71,17 @@ public class NewWorkoutActivity extends AppCompatActivity {
         newWorkoutAddBtn = findViewById(R.id.newWorkoutAddBtn);
         newWorkoutAddBtn.setOnClickListener(view -> {
             Intent intent = new Intent(NewWorkoutActivity.this, AddExerciseActivity.class);
-            startActivity(intent);
-            finish();
-        });
-
-        newWorkoutDoneBtn = findViewById(R.id.newWorkoutDoneBtn);
-        newWorkoutAddBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(NewWorkoutActivity.this, AddExerciseActivity.class);
             exerciseDetailsLauncher.launch(intent);
         });
+
+//        newWorkoutDoneBtn = findViewById(R.id.newWorkoutDoneBtn);
+//        newWorkoutAddBtn.setOnClickListener(view -> {
+//            Intent intent = new Intent(NewWorkoutActivity.this, AddExerciseActivity.class);
+//            exerciseDetailsLauncher.launch(intent);
+//        });
     }
 
-//    private ActivityResultLauncher<Intent> exerciseDetailsLauncher = registerForActivityResult(
+    //    private ActivityResultLauncher<Intent> exerciseDetailsLauncher = registerForActivityResult(
 //            new ActivityResultContracts.StartActivityForResult(),
 //            result -> {
 //                if (result.getResultCode() == RESULT_OK) {
@@ -81,31 +106,31 @@ public class NewWorkoutActivity extends AppCompatActivity {
     );
 
 
-    private void handleExerciseDetailsResult(Intent data) {
-        if (data != null) {
-            // Get the exercise name from the result
-            String exerciseName = data.getStringExtra("exerciseName");
+//    private void handleExerciseDetailsResult(Intent data) {
+//        if (data != null) {
+//            // Get the exercise name from the result
+//            String exerciseName = data.getStringExtra("exerciseName");
+//
+//            // Add the exercise name to the list
+//            exerciseList.add(exerciseName);
+//            // Notify the adapter that the data set has changed
+//            ((ExerciseAdaptor) exerciseListView.getAdapter()).notifyDataSetChanged();
+//        }
+//    }
 
-            // Add the exercise name to the list
-            exerciseList.add(exerciseName);
-            // Notify the adapter that the data set has changed
-            ((ExerciseAdaptor) exerciseListView.getAdapter()).notifyDataSetChanged();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            // Get the exercise name from the result
-            String exerciseName = data.getStringExtra("exerciseName");
-
-            // Add the exercise name to the list
-            exerciseList.add(exerciseName);
-            // Notify the adapter that the data set has changed
-            ((ExerciseAdaptor) exerciseListView.getAdapter()).notifyDataSetChanged();
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == 1 && resultCode == RESULT_OK) {
+//            // Get the exercise name from the result
+//            String exerciseName = data.getStringExtra("exerciseName");
+//
+//            // Add the exercise name to the list
+//            exerciseList.add(exerciseName);
+//            // Notify the adapter that the data set has changed
+//            ((ExerciseAdaptor) exerciseListView.getAdapter()).notifyDataSetChanged();
+//        }
+//    }
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {

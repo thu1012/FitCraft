@@ -1,5 +1,8 @@
 package com.cs407.fitcraft;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -10,7 +13,21 @@ import android.widget.Button;
 import android.widget.VideoView;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ExerciseDetails extends AppCompatActivity {
+    DatabaseHelper databaseHelper = new DatabaseHelper();
+
+    List<String> exercises;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,16 +47,63 @@ public class ExerciseDetails extends AppCompatActivity {
         VideoHelper videoHelper = new VideoHelper(videoView, true,  this);
         videoHelper.setVideo(exerciseName, this);
 
-        Button addButton = findViewById(R.id.addButton);
         String finalExerciseName = exerciseName;
+        Log.d("finalExerciseName", finalExerciseName);
+        Map<String, Object> workoutData = new HashMap<>();
+        workoutData.put("description", "Self defined workout");
+        workoutData.put("name", "Workout 2");
+        exercises = new ArrayList<>();
+
+//        databaseHelper.getWorkout("TestWorkout", new DatabaseHelper.Callback<Workout>() {
+//            @Override
+//            public void onSuccess(Workout result) {
+//                exercises = result.exercises;
+////                exercises.add(-1, finalExerciseName);
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                Log.e("Workout Play", "Error loading workout exercises", e);
+//            }
+//        });
+
+//        Log.d("exercises", exercises.get(0));
+
+        // append the current exercise
+        exercises.add(finalExerciseName);
+        workoutData.put("exercises", exercises);
+
+        // write it to the database
+        Button addButton = findViewById(R.id.addButton);
         addButton.setOnClickListener(v -> {
             Log.d("ExerciseDetails", "Add button clicked with exercise: " + finalExerciseName);
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra("exerciseName", finalExerciseName);
-            setResult(Activity.RESULT_OK, returnIntent);
-            finish();
+            databaseHelper.writeWorkout(workoutData, new DatabaseHelper.Callback<Workout>() {
+                @Override
+                public void onSuccess(Workout result) {
+                    Log.d("ExerciseDetails", "Workout successfully written!");
+                    Intent intent = new Intent(ExerciseDetails.this, NewWorkoutActivity.class);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("Workout Play", "Error loading workout exercises", e);
+                }
+            });
         });
 
+
+//        addButton.setOnClickListener(v -> {
+//            db.collection("Workouts").document("Workout 2")
+//                    .set(workoutData)
+//                    .addOnSuccessListener(aVoid -> {
+//                        Log.d("ExerciseDetails", "Workout successfully written!");
+//                        Intent intent = new Intent(ExerciseDetails.this, NewWorkoutActivity.class);
+//                        startActivity(intent);
+//                        // Optional: Redirect or perform other actions upon success
+//                    })
+//                    .addOnFailureListener(e -> Log.w("ExerciseDetails", "Error writing workout", e));
+//        });
     }
 
     @Override
@@ -52,3 +116,4 @@ public class ExerciseDetails extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+

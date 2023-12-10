@@ -35,6 +35,7 @@ public class AddExerciseActivity extends AppCompatActivity {
         exerciseList = new ArrayList<>();
 
         // Initialize ListView and Adapter
+
         exerciseListView = findViewById(R.id.addExerciseListView);
         adapter = new ExerciseAdaptor(exerciseList, getApplicationContext(), "addExercise");
         exerciseListView.setAdapter(adapter);
@@ -48,18 +49,6 @@ public class AddExerciseActivity extends AppCompatActivity {
         loadExercisesFromDatabase();
     }
 
-    private ActivityResultLauncher<Intent> exerciseDetailsLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                Log.d("AddExerciseActivity", "exerciseDetailsLauncher: resultCode = " + result.getResultCode());
-                if (result.getResultCode() == RESULT_OK) {
-                    Intent data = result.getData();
-                    Log.d("AddExerciseActivity", "Returning exercise to NewWorkoutActivity");
-                    setResult(RESULT_OK, data);
-                    finish();
-                }
-            }
-    );
 
 
     private void loadExercisesFromDatabase() {
@@ -78,20 +67,13 @@ public class AddExerciseActivity extends AppCompatActivity {
             }
         });
 
-        exerciseListView.setOnItemClickListener((adapterView, view, position, id) -> {
-            String exerciseName = exerciseList.get(position);
-            Log.d("AddExerciseActivity", "Launching ExerciseDetails for: " + exerciseName);
-            Intent intent = new Intent(this, ExerciseDetails.class);
-            intent.putExtra("exerciseName", exerciseName);
-            exerciseDetailsLauncher.launch(intent);
-        });
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             // Respond to the action bar's Up/Home button
-            Intent intent = new Intent(AddExerciseActivity.this, NewWorkoutActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent(AddExerciseActivity.this, FirstPage.class);
+//            startActivity(intent);
             finish();
             return true;
         }
