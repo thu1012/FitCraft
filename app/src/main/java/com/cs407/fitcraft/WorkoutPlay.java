@@ -1,29 +1,19 @@
 package com.cs407.fitcraft;
 
-import androidx.annotation.WorkerThread;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import org.checkerframework.checker.units.qual.A;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class WorkoutPlay extends AppCompatActivity {
-    ArrayList<String> exerciseList;
-    ListView exerciseListView;
-    DatabaseHelper databaseHelper = new DatabaseHelper();
-
-    Activity activity = this;
+    private ListView exerciseListView;
+    private TextView descriptionTextView;
+    private final Activity activity = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,17 +22,24 @@ public class WorkoutPlay extends AppCompatActivity {
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("*Play Workout*");
+            getSupportActionBar().setTitle("Loading");
         }
 
         String workoutId = getIntent().getStringExtra("workoutId");
-        if(workoutId==null) workoutId = "TestWorkout";
+        if (workoutId == null) workoutId = "TestWorkout";
+
+        DatabaseHelper databaseHelper = new DatabaseHelper();
         databaseHelper.getWorkout(workoutId, new DatabaseHelper.Callback<Workout>() {
             @Override
             public void onSuccess(Workout result) {
-                //exerciseList = new ArrayList<>(Arrays.asList(result));
-                exerciseListView = findViewById(R.id.ListofWorkouts);
-                exerciseListView.setAdapter(new WorkoutPlayAdaptor(result.exercises, activity, findViewById(R.id.workoutPlayVideoView)));
+                exerciseListView = findViewById(R.id.workoutPlayListView);
+                exerciseListView.setAdapter(new WorkoutPlayAdaptor(result.exercises, activity,
+                        findViewById(R.id.workoutPlayVideoView)));
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(result.name);
+                }
+                descriptionTextView = findViewById(R.id.workOutPlayTextView);
+                descriptionTextView.setText(result.description);
             }
 
             @Override
@@ -50,11 +47,10 @@ public class WorkoutPlay extends AppCompatActivity {
                 Log.e("Workout Play", "Error loading workout exercises", e);
             }
         });
-        // exerciseList = new ArrayList<>();
-        }
+    }
+
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            // Respond to the action bar's Up/Home button
             Intent intent = new Intent(WorkoutPlay.this, FirstPage.class);
             startActivity(intent);
             finish();

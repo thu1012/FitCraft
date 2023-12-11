@@ -1,5 +1,7 @@
 package com.cs407.fitcraft;
 
+import static java.security.AccessController.getContext;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
@@ -7,11 +9,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 import androidx.core.app.TaskStackBuilder;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -22,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 import android.text.Editable;
+import android.widget.TextView;
 
 
 public class NewWorkoutActivity extends AppCompatActivity {
@@ -39,6 +46,23 @@ public class NewWorkoutActivity extends AppCompatActivity {
 
         EditText editTextExample = findViewById(R.id.editTextExample);
         String userEnteredText = editTextExample.getText().toString();
+
+        editTextExample.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE ||
+                        (event != null && event.getAction() == KeyEvent.ACTION_DOWN &&
+                                event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    // Close keyboard
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(editTextExample.getWindowToken(), 0);
+                    // Remove focus from EditText
+                    editTextExample.clearFocus();
+                    return true; // Consume the event
+                }
+                return false; // Pass on the event to other listeners
+            }
+        });
 
 
         if (getSupportActionBar() != null) {
@@ -64,43 +88,20 @@ public class NewWorkoutActivity extends AppCompatActivity {
             }
         });
 
-
-//        String workoutId = getIntent().getStringExtra("workoutId");
-//        if(workoutId!=null){
-//            databaseHelper.getWorkout(workoutId, new DatabaseHelper.Callback<Workout>() {
-//                @Override
-//                public void onSuccess(Workout result) {
-//                    //exerciseList = new ArrayList<>(Arrays.asList(result));
-//                    exerciseListView = findViewById(R.id.newWorkoutExerciseList);
-//                    exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout"));
-//                }
-//
-//                @Override
-//                public void onError(Exception e) {
-//                    Log.e("Workout Play", "Error loading workout exercises", e);
-//                }
-//            });
-//
-//        } else{
-//            exerciseListView = findViewById(R.id.newWorkoutExerciseList);
-//            exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout"));
-//        }
-
         String workoutId = getIntent().getStringExtra("workoutId");
+        String workoutName = getIntent().getStringExtra("workoutName");
         exerciseList = new ArrayList<>();
         if(workoutId==null) {
             workoutId = UUID.randomUUID().toString();
         } else {
-            Log.i("New Workout", "Workout ID: " + workoutId);
             String finalWorkoutId = workoutId;
             databaseHelper.getWorkout(workoutId, new DatabaseHelper.Callback<Workout>() {
                 @Override
                 public void onSuccess(Workout result) {
-                    Log.i("New Workout", "Successfully retrieved workout exercises");
                     exerciseList.addAll(result.exercises);
                     exerciseListView = findViewById(R.id.newWorkoutExerciseList);
-                    Log.e("New Workout", ""+exerciseList);
-                    exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout", finalWorkoutId));
+                    exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout", finalWorkoutId, workoutName));
+                    updateActionBarTitle(result.name);
                 }
 
                 @Override
@@ -110,15 +111,12 @@ public class NewWorkoutActivity extends AppCompatActivity {
             });
         }
 
-//        String exerciseName = getIntent().getStringExtra("exerciseName");
-//        if(exerciseName==null)  exerciseList = new ArrayList<>();
-//        else exerciseList.add(exerciseName);
-
         newWorkoutAddBtn = findViewById(R.id.newWorkoutAddBtn);
         String finalWorkoutId = workoutId;
         newWorkoutAddBtn.setOnClickListener(view -> {
             Intent intent = new Intent(NewWorkoutActivity.this, AddExerciseActivity.class);
             intent.putExtra("workoutId", finalWorkoutId);
+            intent.putExtra("workoutName", getSupportActionBar().getTitle());
             exerciseDetailsLauncher.launch(intent);
         });
 

@@ -7,26 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".WorkoutPlay">
 
-
     <TextView
-        android:id="@+id/pageTitle"
+        android:id="@+id/workOutPlayTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your Workout 1"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="16dp" />
-
-    <TextView
-        android:id="@+id/sectionTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Time Calories\nDescriptions"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pageTitle"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="16dp" />
 
     <VideoView
@@ -37,14 +24,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sectionTitle" />
+        app:layout_constraintTop_toBottomOf="@id/workOutPlayTextView" />
 
     <ListView
-        android:id="@+id/ListofWorkouts"
+        android:id="@+id/workoutPlayListView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="2dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/workoutPlayVideoView"
