@@ -71,7 +71,11 @@ public class ExerciseDetails extends AppCompatActivity {
         Log.d("finalExerciseName", finalExerciseName);
         Map<String, Object> workoutData = new HashMap<>();
         workoutData.put("description", "Self defined workout");
-        workoutData.put("name", "Workout 2");
+
+        String workoutName = getIntent().getStringExtra("workoutName");
+        if (workoutName==null) workoutData.put("name", "Default Workout Name");
+        else workoutData.put("name", workoutName);
+
         exercises = new ArrayList<>();
 
         databaseHelper.getWorkout(getIntent().getStringExtra("workoutId"), new DatabaseHelper.Callback<Workout>() {
@@ -92,7 +96,6 @@ public class ExerciseDetails extends AppCompatActivity {
 
 
         // append the current exercise
-
         workoutData.put("exercises", exercises);
 
         // write it to the database
@@ -102,9 +105,10 @@ public class ExerciseDetails extends AppCompatActivity {
             databaseHelper.writeWorkout(workoutData, getIntent().getStringExtra("workoutId"), new DatabaseHelper.Callback<Workout>() {
                 @Override
                 public void onSuccess(Workout result) {
-                    Log.d("ExerciseDetails", "Workout successfully written!");
                     Intent intent = new Intent(ExerciseDetails.this, NewWorkoutActivity.class);
                     intent.putExtra("workoutId", getIntent().getStringExtra("workoutId"));
+                    intent.putExtra("workoutName", getIntent().getStringExtra("workoutName"));
+                    Log.d("ExerciseDetails", "Workout successfully written!");
                     startActivity(intent);
                 }
 

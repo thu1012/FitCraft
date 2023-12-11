@@ -35,9 +35,10 @@ public class AddExerciseActivity extends AppCompatActivity {
         exerciseList = new ArrayList<>();
 
         // Initialize ListView and Adapter
-
         exerciseListView = findViewById(R.id.addExerciseListView);
-        adapter = new ExerciseAdaptor(exerciseList, getApplicationContext(), "addExercise", getIntent().getStringExtra("workoutId"));
+        adapter = new ExerciseAdaptor(exerciseList, getApplicationContext(), "addExercise",
+                getIntent().getStringExtra("workoutId"),
+                getIntent().getStringExtra("workoutName"));
         exerciseListView.setAdapter(adapter);
 
         if (getSupportActionBar() != null) {

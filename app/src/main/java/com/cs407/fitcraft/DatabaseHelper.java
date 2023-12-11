@@ -131,6 +131,7 @@ public class DatabaseHelper {
                     }
                 });
     }
+
     public void getExerciseName(String exerciseId, final Callback<String> callback) {
         db.collection("Exercises").document(exerciseId)
                 .get()

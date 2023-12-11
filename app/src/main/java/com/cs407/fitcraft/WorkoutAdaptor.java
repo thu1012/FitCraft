@@ -18,13 +18,13 @@ public class WorkoutAdaptor extends BaseAdapter implements ListAdapter {
 
     private List<String> workouts;
     private Context context;
-    private DatabaseHelper databaseHelper = new DatabaseHelper();
+    private DatabaseHelper databaseHelper;
 
 
     public WorkoutAdaptor(List<String> workouts, Context context) {
-        this.workouts = new ArrayList<>();
-        this.workouts.addAll(workouts);
+        this.workouts = workouts;
         this.context = context;
+        this.databaseHelper = new DatabaseHelper();
     }
     @Override
     public int getCount() {
@@ -63,17 +63,6 @@ public class WorkoutAdaptor extends BaseAdapter implements ListAdapter {
                 Log.e("workout adaptor", "failed to retrieve workout name", e);
             }
         });
-//        databaseHelper.getWorkoutIdList(new DatabaseHelper.Callback<List<String>>() {
-//            @Override
-//            public void onSuccess(List<String> result) {
-//                workoutTextView.setText(result.get(position));
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                Log.e("ExerciseAdaptor", "Error getting exercise", e);
-//            }
-//        });
 
         Button btn = view.findViewById(R.id.exerciseLayoutBtn);
         btn.setOnClickListener(new View.OnClickListener() {

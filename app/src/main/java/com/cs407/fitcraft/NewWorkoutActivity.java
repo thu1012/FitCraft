@@ -86,21 +86,22 @@ public class NewWorkoutActivity extends AppCompatActivity {
 //            exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout"));
 //        }
 
+        // updateActionBarTitle("Default Workout Name");
+
         String workoutId = getIntent().getStringExtra("workoutId");
+        String workoutName = getIntent().getStringExtra("workoutName");
         exerciseList = new ArrayList<>();
         if(workoutId==null) {
             workoutId = UUID.randomUUID().toString();
         } else {
-            Log.i("New Workout", "Workout ID: " + workoutId);
             String finalWorkoutId = workoutId;
             databaseHelper.getWorkout(workoutId, new DatabaseHelper.Callback<Workout>() {
                 @Override
                 public void onSuccess(Workout result) {
-                    Log.i("New Workout", "Successfully retrieved workout exercises");
                     exerciseList.addAll(result.exercises);
                     exerciseListView = findViewById(R.id.newWorkoutExerciseList);
-                    Log.e("New Workout", ""+exerciseList);
-                    exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout", finalWorkoutId));
+                    exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout", finalWorkoutId, workoutName));
+                    updateActionBarTitle(result.name);
                 }
 
                 @Override
@@ -119,6 +120,7 @@ public class NewWorkoutActivity extends AppCompatActivity {
         newWorkoutAddBtn.setOnClickListener(view -> {
             Intent intent = new Intent(NewWorkoutActivity.this, AddExerciseActivity.class);
             intent.putExtra("workoutId", finalWorkoutId);
+            intent.putExtra("workoutName", getSupportActionBar().getTitle());
             exerciseDetailsLauncher.launch(intent);
         });
 
