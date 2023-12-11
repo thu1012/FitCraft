@@ -1,5 +1,7 @@
 package com.cs407.fitcraft;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -33,8 +35,9 @@ public class AddExerciseActivity extends AppCompatActivity {
         exerciseList = new ArrayList<>();
 
         // Initialize ListView and Adapter
+
         exerciseListView = findViewById(R.id.addExerciseListView);
-        adapter = new ExerciseAdaptor(exerciseList, getApplicationContext(), "addExercise");
+        adapter = new ExerciseAdaptor(exerciseList, getApplicationContext(), "addExercise", getIntent().getStringExtra("workoutId"));
         exerciseListView.setAdapter(adapter);
 
         if (getSupportActionBar() != null) {
@@ -45,6 +48,7 @@ public class AddExerciseActivity extends AppCompatActivity {
         // Now load exercises from database
         loadExercisesFromDatabase();
     }
+
 
 
     private void loadExercisesFromDatabase() {
@@ -62,20 +66,14 @@ public class AddExerciseActivity extends AppCompatActivity {
                 Log.e("AddExerciseActivity", "Error loading exercises", e);
             }
         });
-        exerciseListView.setOnItemClickListener((adapterView, view, position, id) -> {
-            String exerciseName = exerciseList.get(position);
 
-            Intent intent = new Intent(AddExerciseActivity.this, ExerciseDetails.class);
-            intent.putExtra("exerciseName", exerciseName);
-            startActivity(intent);
-        });
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             // Respond to the action bar's Up/Home button
-            Intent intent = new Intent(AddExerciseActivity.this, NewWorkoutActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent(AddExerciseActivity.this, FirstPage.class);
+//            startActivity(intent);
             finish();
             return true;
         }

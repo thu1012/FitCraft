@@ -1,5 +1,7 @@
 package com.cs407.fitcraft;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -12,6 +14,8 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
     private ArrayList<String> exerciseList;
@@ -19,11 +23,14 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
     private String pageName;
     private DatabaseHelper databaseHelper;
 
-    public ExerciseAdaptor(ArrayList<String> exerciseList, Context context, String pageName) {
+    private String workoutId;
+
+    public ExerciseAdaptor(ArrayList<String> exerciseList, Context context, String pageName, String workoutId) {
         this.exerciseList = exerciseList;
         this.context = context;
         this.pageName = pageName;
         this.databaseHelper = new DatabaseHelper();
+        this.workoutId = workoutId;
     }
 
     @Override
@@ -70,10 +77,43 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
                 if (pageName.equals("newWorkout")) {
                     // Remove the item from the list
                     exerciseList.remove(position);
-                    // Notify the adapter that the data set has changed
-                    notifyDataSetChanged();
+                    String name = "";
+                    String description = "";
+                    // get the name and description
+                    databaseHelper.getWorkout(workoutId, new DatabaseHelper.Callback<Workout>() {
+                        @Override
+                        public void onSuccess(Workout result) {
+                            String name = result.name;
+                            String description = result.description;
+                            Map<String, Object> workoutData = new HashMap<>();
+                            workoutData.put("description", description);
+                            workoutData.put("name", name);
+                            workoutData.put("exercises", exerciseList);
+                            databaseHelper.writeWorkout(workoutData, workoutId, new DatabaseHelper.Callback<Workout>() {
+                                @Override
+                                public void onSuccess(Workout result) {
+                                    Log.d("ExerciseRemoved", "Removed Exercise successfully written!");
+                                    Intent intent = new Intent(context, NewWorkoutActivity.class);
+                                    intent.putExtra("workoutId", workoutId);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    context.startActivity(intent);
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    Log.e("Workout Play", "Error loading workout exercises", e);
+                                }
+                            });
+
+                        }
+                        @Override
+                        public void onError(Exception e) {
+                            Log.e("New Workout", "Failed to retrieve workout exercises", e);
+                        }
+                    });
                 } else if (pageName.equals("addExercise")) {
                     Intent intent = new Intent(context, ExerciseDetails.class);
+                    intent.putExtra("workoutId", workoutId);
                     intent.putExtra("exerciseName", exerciseList.get(position));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
@@ -95,3 +135,4 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
         return view;
     }
 }
+

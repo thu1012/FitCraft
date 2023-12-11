@@ -1,5 +1,8 @@
 package com.cs407.fitcraft;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
+import android.content.Intent;
 import android.util.Log;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -8,7 +11,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseHelper {
     private FirebaseFirestore db;
@@ -37,16 +43,16 @@ public class DatabaseHelper {
         db.collection("Exercises").document(exerciseId)
                 .get()
                 .addOnCompleteListener(task -> {
-                   if(task.isSuccessful()) {
-                       DocumentSnapshot snapshot = task.getResult();
-                       String name = (String) snapshot.get("name");
-                       String description = (String) snapshot.get("description");
-                       String url = (String) snapshot.get("url");
-                       Exercise exercise = new Exercise(name, description, url, exerciseId);
-                       callback.onSuccess(exercise);
-                   } else {
-                       callback.onError(task.getException());
-                   }
+                    if(task.isSuccessful()) {
+                        DocumentSnapshot snapshot = task.getResult();
+                        String name = (String) snapshot.get("name");
+                        String description = (String) snapshot.get("description");
+                        String url = (String) snapshot.get("url");
+                        Exercise exercise = new Exercise(name, description, url, exerciseId);
+                        callback.onSuccess(exercise);
+                    } else {
+                        callback.onError(task.getException());
+                    }
                 });
     }
 
@@ -65,6 +71,14 @@ public class DatabaseHelper {
                         callback.onError(task.getException());
                     }
                 });
+    }
+
+    public void writeWorkout(Map<String, Object> workoutData, String workoutId, final Callback<Workout> callback) {
+
+        db.collection("Workouts").document(workoutId)
+                .set(workoutData)
+                .addOnSuccessListener(aVoid -> callback.onSuccess(null))
+                .addOnFailureListener(callback::onError);
     }
 
 

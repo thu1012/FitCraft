@@ -10,6 +10,7 @@ import androidx.core.app.TaskStackBuilder;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -19,16 +20,16 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.UUID;
 import android.text.Editable;
 
 
 public class NewWorkoutActivity extends AppCompatActivity {
     ArrayList<String> exerciseList;
     ListView exerciseListView;
-
     Button newWorkoutAddBtn;
-
     Button newWorkoutDoneBtn;
+    DatabaseHelper databaseHelper = new DatabaseHelper();
 
 
     @Override
@@ -63,21 +64,61 @@ public class NewWorkoutActivity extends AppCompatActivity {
             }
         });
 
-        exerciseList = new ArrayList<>();
-        exerciseListView = findViewById(R.id.newWorkoutExerciseList);
-        exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout"));
 
+//        String workoutId = getIntent().getStringExtra("workoutId");
+//        if(workoutId!=null){
+//            databaseHelper.getWorkout(workoutId, new DatabaseHelper.Callback<Workout>() {
+//                @Override
+//                public void onSuccess(Workout result) {
+//                    //exerciseList = new ArrayList<>(Arrays.asList(result));
+//                    exerciseListView = findViewById(R.id.newWorkoutExerciseList);
+//                    exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout"));
+//                }
+//
+//                @Override
+//                public void onError(Exception e) {
+//                    Log.e("Workout Play", "Error loading workout exercises", e);
+//                }
+//            });
+//
+//        } else{
+//            exerciseListView = findViewById(R.id.newWorkoutExerciseList);
+//            exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout"));
+//        }
+
+        String workoutId = getIntent().getStringExtra("workoutId");
+        exerciseList = new ArrayList<>();
+        if(workoutId==null) {
+            workoutId = UUID.randomUUID().toString();
+        } else {
+            Log.i("New Workout", "Workout ID: " + workoutId);
+            String finalWorkoutId = workoutId;
+            databaseHelper.getWorkout(workoutId, new DatabaseHelper.Callback<Workout>() {
+                @Override
+                public void onSuccess(Workout result) {
+                    Log.i("New Workout", "Successfully retrieved workout exercises");
+                    exerciseList.addAll(result.exercises);
+                    exerciseListView = findViewById(R.id.newWorkoutExerciseList);
+                    Log.e("New Workout", ""+exerciseList);
+                    exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout", finalWorkoutId));
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("New Workout", "Failed to retrieve workout exercises", e);
+                }
+            });
+        }
+
+//        String exerciseName = getIntent().getStringExtra("exerciseName");
+//        if(exerciseName==null)  exerciseList = new ArrayList<>();
+//        else exerciseList.add(exerciseName);
 
         newWorkoutAddBtn = findViewById(R.id.newWorkoutAddBtn);
+        String finalWorkoutId = workoutId;
         newWorkoutAddBtn.setOnClickListener(view -> {
             Intent intent = new Intent(NewWorkoutActivity.this, AddExerciseActivity.class);
-            startActivity(intent);
-            finish();
-        });
-
-        newWorkoutDoneBtn = findViewById(R.id.newWorkoutDoneBtn);
-        newWorkoutAddBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(NewWorkoutActivity.this, AddExerciseActivity.class);
+            intent.putExtra("workoutId", finalWorkoutId);
             exerciseDetailsLauncher.launch(intent);
         });
     }
@@ -95,11 +136,14 @@ public class NewWorkoutActivity extends AppCompatActivity {
             result -> {
                 if (result.getResultCode() == RESULT_OK) {
                     Intent data = result.getData();
-                    // Handle the result as before
-                    handleExerciseDetailsResult(data);
+                    String exerciseName = data.getStringExtra("exerciseName");
+                    Log.d("NewWorkoutActivity", "Received exercise: " + exerciseName);
+                    exerciseList.add(exerciseName);
+                    ((ExerciseAdaptor)exerciseListView.getAdapter()).notifyDataSetChanged();
                 }
             }
     );
+
 
     private void handleExerciseDetailsResult(Intent data) {
         if (data != null) {
