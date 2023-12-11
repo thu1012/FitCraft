@@ -31,13 +31,12 @@ public class WorkoutAdaptor extends BaseAdapter implements ListAdapter {
         this.context = context;
         this.databaseHelper = new DatabaseHelper();
 
-        // Preload workouts and cache them
         for (String workoutId : workouts) {
             databaseHelper.getWorkout(workoutId, new DatabaseHelper.Callback<Workout>() {
                 @Override
                 public void onSuccess(Workout workout) {
                     workoutCache.put(workoutId, workout);
-                    notifyDataSetChanged(); // Notify the adapter to refresh the list
+                    notifyDataSetChanged();
                 }
 
                 @Override
@@ -63,7 +62,6 @@ public class WorkoutAdaptor extends BaseAdapter implements ListAdapter {
         return 0;
     }
 
-    // ViewHolder pattern to optimize ListView performance
     private static class ViewHolder {
         TextView nameTextView;
         TextView descriptionTextView;

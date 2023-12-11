@@ -40,7 +40,7 @@ public class FirstPage extends AppCompatActivity {
 
             @Override
             public void onError(Exception e) {
-                Log.e("Workout list", "Error loading workout list", e);
+                Log.e("first page", "Error loading workout id list", e);
             }
         });
     }
