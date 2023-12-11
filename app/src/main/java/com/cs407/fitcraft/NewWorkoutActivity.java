@@ -123,6 +123,7 @@ public class NewWorkoutActivity extends AppCompatActivity {
         });
 
         newWorkoutDoneBtn = findViewById(R.id.newWorkoutDoneBtn);
+        newWorkoutDoneBtn = findViewById(R.id.newWorkoutDoneBtn);
         newWorkoutDoneBtn.setOnClickListener(view -> {
             Intent intent = new Intent(NewWorkoutActivity.this, FirstPage.class);
             startActivity(intent);
