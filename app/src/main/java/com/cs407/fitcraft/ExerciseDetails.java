@@ -77,11 +77,12 @@ public class ExerciseDetails extends AppCompatActivity {
         Button addButton = findViewById(R.id.addButton);
         addButton.setOnClickListener(v -> {
             Log.d("ExerciseDetails", "Add button clicked with exercise: " + finalExerciseName);
-            databaseHelper.writeWorkout(workoutData, new DatabaseHelper.Callback<Workout>() {
+            databaseHelper.writeWorkout(workoutData, getIntent().getStringExtra("workoutId"), new DatabaseHelper.Callback<Workout>() {
                 @Override
                 public void onSuccess(Workout result) {
                     Log.d("ExerciseDetails", "Workout successfully written!");
                     Intent intent = new Intent(ExerciseDetails.this, NewWorkoutActivity.class);
+                    intent.putExtra("workoutId", getIntent().getStringExtra("workoutId"));
                     startActivity(intent);
                 }
 

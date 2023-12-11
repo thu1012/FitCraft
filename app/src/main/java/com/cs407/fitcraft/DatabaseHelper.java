@@ -56,6 +56,7 @@ public class DatabaseHelper {
     }
 
     public void getWorkout(String workoutId, final Callback<Workout> callback) {
+        System.out.println(workoutId);
         db.collection("Workouts").document(workoutId)
                 .get()
                 .addOnCompleteListener(task -> {
@@ -72,9 +73,9 @@ public class DatabaseHelper {
                 });
     }
 
-    public void writeWorkout(Map<String, Object> workoutData, final Callback<Workout> callback) {
+    public void writeWorkout(Map<String, Object> workoutData, String workoutId, final Callback<Workout> callback) {
 
-        db.collection("Workouts").document(workoutData.get("name").toString())
+        db.collection("Workouts").document(workoutId)
                 .set(workoutData)
                 .addOnSuccessListener(aVoid -> callback.onSuccess(null))
                 .addOnFailureListener(callback::onError);

@@ -22,7 +22,7 @@ public class FirstPage extends AppCompatActivity {
 
         exerciseList = new ArrayList<>();
         exerciseListView = findViewById(R.id.ListofWorkouts);
-        exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "firstPage"));
+        exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "firstPage", ""));
 
 
         createButton = findViewById(R.id.createButton);

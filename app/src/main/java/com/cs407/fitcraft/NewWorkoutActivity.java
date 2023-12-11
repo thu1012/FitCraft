@@ -18,6 +18,7 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.UUID;
 
 public class NewWorkoutActivity extends AppCompatActivity {
     ArrayList<String> exerciseList;
@@ -58,19 +59,40 @@ public class NewWorkoutActivity extends AppCompatActivity {
 //            exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout"));
 //        }
 
+        String workoutId = getIntent().getStringExtra("workoutId");
+        if(workoutId==null) {
+            workoutId = UUID.randomUUID().toString();
+            exerciseList = new ArrayList<>();
+        } else {
+            Log.i("New Workout", "Workout ID: " + workoutId);
+            databaseHelper.getWorkout(workoutId, new DatabaseHelper.Callback<Workout>() {
+                @Override
+                public void onSuccess(Workout result) {
+                    Log.i("New Workout", "Successfully retrieved workout exercises");
+                    exerciseList.addAll(result.exercises);
+                }
 
+                @Override
+                public void onError(Exception e) {
+                    Log.e("New Workout", "Failed to retrieve workout exercises", e);
+                }
+            });
+        }
 
-        String exerciseName = getIntent().getStringExtra("exerciseName");
-        if(exerciseName==null)  exerciseList = new ArrayList<>();
-        else exerciseList.add(exerciseName);
+//        String exerciseName = getIntent().getStringExtra("exerciseName");
+//        if(exerciseName==null)  exerciseList = new ArrayList<>();
+//        else exerciseList.add(exerciseName);
 
         exerciseListView = findViewById(R.id.newWorkoutExerciseList);
-        exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout"));
+        Log.e("New Workout", ""+exerciseList);
+        exerciseListView.setAdapter(new ExerciseAdaptor(exerciseList, getApplicationContext(), "newWorkout", workoutId));
 
 
         newWorkoutAddBtn = findViewById(R.id.newWorkoutAddBtn);
+        String finalWorkoutId = workoutId;
         newWorkoutAddBtn.setOnClickListener(view -> {
             Intent intent = new Intent(NewWorkoutActivity.this, AddExerciseActivity.class);
+            intent.putExtra("workoutId", finalWorkoutId);
             exerciseDetailsLauncher.launch(intent);
         });
 

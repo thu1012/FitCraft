@@ -19,11 +19,14 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
     private String pageName;
     private DatabaseHelper databaseHelper;
 
-    public ExerciseAdaptor(ArrayList<String> exerciseList, Context context, String pageName) {
+    private String workoutId;
+
+    public ExerciseAdaptor(ArrayList<String> exerciseList, Context context, String pageName, String workoutId) {
         this.exerciseList = exerciseList;
         this.context = context;
         this.pageName = pageName;
         this.databaseHelper = new DatabaseHelper();
+        this.workoutId = workoutId;
     }
 
     @Override
@@ -74,6 +77,7 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
                     notifyDataSetChanged();
                 } else if (pageName.equals("addExercise")) {
                     Intent intent = new Intent(context, ExerciseDetails.class);
+                    intent.putExtra("workoutId", workoutId);
                     intent.putExtra("exerciseName", exerciseList.get(position));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
