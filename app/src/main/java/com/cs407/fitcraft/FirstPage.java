@@ -51,7 +51,6 @@ public class FirstPage extends AppCompatActivity {
 
         context = this;
 
-
         databaseHelper.getWorkoutIdList(new DatabaseHelper.Callback<List<String>>() {
             @Override
             public void onSuccess(List<String> result) {

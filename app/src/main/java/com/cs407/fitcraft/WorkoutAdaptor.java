@@ -50,17 +50,30 @@ public class WorkoutAdaptor extends BaseAdapter implements ListAdapter {
         }
 
         TextView workoutTextView = view.findViewById(R.id.exerciseLayoutExerciseName);
-        databaseHelper.getWorkoutIdList(new DatabaseHelper.Callback<List<String>>() {
+        TextView workoutDescriptionTextView = view.findViewById(R.id.exerciseLayoutExerciseDescription);
+        databaseHelper.getWorkout(workouts.get(position), new DatabaseHelper.Callback<Workout>() {
             @Override
-            public void onSuccess(List<String> result) {
-                workoutTextView.setText(result.get(position));
+            public void onSuccess(Workout workout) {
+                workoutTextView.setText(workout.name);
+                workoutDescriptionTextView.setText(workout.description);
             }
 
             @Override
             public void onError(Exception e) {
-                Log.e("ExerciseAdaptor", "Error getting exercise", e);
+                Log.e("workout adaptor", "failed to retrieve workout name", e);
             }
         });
+//        databaseHelper.getWorkoutIdList(new DatabaseHelper.Callback<List<String>>() {
+//            @Override
+//            public void onSuccess(List<String> result) {
+//                workoutTextView.setText(result.get(position));
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//                Log.e("ExerciseAdaptor", "Error getting exercise", e);
+//            }
+//        });
 
         Button btn = view.findViewById(R.id.exerciseLayoutBtn);
         btn.setOnClickListener(new View.OnClickListener() {

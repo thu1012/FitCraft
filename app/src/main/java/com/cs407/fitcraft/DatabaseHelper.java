@@ -109,8 +109,7 @@ public class DatabaseHelper {
                     if (task.isSuccessful()) {
                         List<String> workoutIdList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task.getResult()) {
-                            String id = document.getString("id");
-                            workoutIdList.add(id);
+                            workoutIdList.add(document.getId());
                         }
                         callback.onSuccess(workoutIdList);
                     } else {
