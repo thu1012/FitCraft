@@ -9,9 +9,11 @@ import androidx.core.app.TaskStackBuilder;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Button;
@@ -19,6 +21,8 @@ import android.widget.Button;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
+import android.text.Editable;
+
 
 public class NewWorkoutActivity extends AppCompatActivity {
     ArrayList<String> exerciseList;
@@ -33,10 +37,33 @@ public class NewWorkoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_workout);
 
+        EditText editTextExample = findViewById(R.id.editTextExample);
+        String userEnteredText = editTextExample.getText().toString();
+
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("*New Workout*");
+            getSupportActionBar().setTitle(userEnteredText);
         }
+
+        editTextExample.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int before, int count) {
+                // Do something before the text changes (if needed)
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                // Do something when the text changes
+                updateActionBarTitle(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // Do something after the text changes (if needed)
+            }
+        });
+
 
 //        String workoutId = getIntent().getStringExtra("workoutId");
 //        if(workoutId!=null){
@@ -94,28 +121,19 @@ public class NewWorkoutActivity extends AppCompatActivity {
             intent.putExtra("workoutId", finalWorkoutId);
             exerciseDetailsLauncher.launch(intent);
         });
-
-//        newWorkoutDoneBtn = findViewById(R.id.newWorkoutDoneBtn);
-//        newWorkoutAddBtn.setOnClickListener(view -> {
-//            Intent intent = new Intent(NewWorkoutActivity.this, AddExerciseActivity.class);
-//            exerciseDetailsLauncher.launch(intent);
-//        });
     }
 
-    //    private ActivityResultLauncher<Intent> exerciseDetailsLauncher = registerForActivityResult(
-//            new ActivityResultContracts.StartActivityForResult(),
-//            result -> {
-//                if (result.getResultCode() == RESULT_OK) {
-//                    Intent data = result.getData();
-//                    // Handle the result as before
-//                    handleExerciseDetailsResult(data);
-//                }
-//            }
-//    );
+    private void updateActionBarTitle(String title) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(title);
+        }
+    }
+
+
     private ActivityResultLauncher<Intent> exerciseDetailsLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                Log.d("NewWorkoutActivity", "ActivityResultLauncher: resultCode = " + result.getResultCode());
                 if (result.getResultCode() == RESULT_OK) {
                     Intent data = result.getData();
                     String exerciseName = data.getStringExtra("exerciseName");
@@ -127,31 +145,31 @@ public class NewWorkoutActivity extends AppCompatActivity {
     );
 
 
-//    private void handleExerciseDetailsResult(Intent data) {
-//        if (data != null) {
-//            // Get the exercise name from the result
-//            String exerciseName = data.getStringExtra("exerciseName");
-//
-//            // Add the exercise name to the list
-//            exerciseList.add(exerciseName);
-//            // Notify the adapter that the data set has changed
-//            ((ExerciseAdaptor) exerciseListView.getAdapter()).notifyDataSetChanged();
-//        }
-//    }
+    private void handleExerciseDetailsResult(Intent data) {
+        if (data != null) {
+            // Get the exercise name from the result
+            String exerciseName = data.getStringExtra("exerciseName");
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == 1 && resultCode == RESULT_OK) {
-//            // Get the exercise name from the result
-//            String exerciseName = data.getStringExtra("exerciseName");
-//
-//            // Add the exercise name to the list
-//            exerciseList.add(exerciseName);
-//            // Notify the adapter that the data set has changed
-//            ((ExerciseAdaptor) exerciseListView.getAdapter()).notifyDataSetChanged();
-//        }
-//    }
+            // Add the exercise name to the list
+            exerciseList.add(exerciseName);
+            // Notify the adapter that the data set has changed
+            ((ExerciseAdaptor) exerciseListView.getAdapter()).notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            // Get the exercise name from the result
+            String exerciseName = data.getStringExtra("exerciseName");
+
+            // Add the exercise name to the list
+            exerciseList.add(exerciseName);
+            // Notify the adapter that the data set has changed
+            ((ExerciseAdaptor) exerciseListView.getAdapter()).notifyDataSetChanged();
+        }
+    }
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
