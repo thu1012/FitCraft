@@ -121,6 +121,13 @@ public class NewWorkoutActivity extends AppCompatActivity {
             intent.putExtra("workoutId", finalWorkoutId);
             exerciseDetailsLauncher.launch(intent);
         });
+
+        newWorkoutDoneBtn = findViewById(R.id.newWorkoutDoneBtn);
+        newWorkoutDoneBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(NewWorkoutActivity.this, FirstPage.class);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void updateActionBarTitle(String title) {
