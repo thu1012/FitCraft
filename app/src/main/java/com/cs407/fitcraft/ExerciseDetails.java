@@ -54,23 +54,25 @@ public class ExerciseDetails extends AppCompatActivity {
         workoutData.put("name", "Workout 2");
         exercises = new ArrayList<>();
 
-//        databaseHelper.getWorkout("TestWorkout", new DatabaseHelper.Callback<Workout>() {
-//            @Override
-//            public void onSuccess(Workout result) {
-//                exercises = result.exercises;
-////                exercises.add(-1, finalExerciseName);
-//            }
-//
-//            @Override
-//            public void onError(Exception e) {
-//                Log.e("Workout Play", "Error loading workout exercises", e);
-//            }
-//        });
+        databaseHelper.getWorkout(getIntent().getStringExtra("workoutId"), new DatabaseHelper.Callback<Workout>() {
+            @Override
+            public void onSuccess(Workout result) {
+                Log.i("ExerciseDetail", "Successfully retrieved old exercises");
+                exercises.add(finalExerciseName);
+                if (result.exercises!=null) {
+                    exercises.addAll(result.exercises);
+                }
+            }
 
-//        Log.d("exercises", exercises.get(0));
+            @Override
+            public void onError(Exception e) {
+                Log.e("New Workout", "Failed to retrieve workout exercises", e);
+            }
+        });
+
 
         // append the current exercise
-        exercises.add(finalExerciseName);
+
         workoutData.put("exercises", exercises);
 
         // write it to the database
@@ -117,4 +119,5 @@ public class ExerciseDetails extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
 
