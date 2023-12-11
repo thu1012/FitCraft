@@ -118,7 +118,20 @@ public class DatabaseHelper {
                     }
                 });
     }
-
+    //新添加
+    public void getWorkoutName(String workoutId, final Callback<String> callback) {
+        db.collection("Workouts").document(workoutId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        DocumentSnapshot snapshot = task.getResult();
+                        String name = (String) snapshot.get("name");
+                        callback.onSuccess(name);
+                    } else {
+                        callback.onError(task.getException());
+                    }
+                });
+    }
     public void getExerciseName(String exerciseId, final Callback<String> callback) {
         db.collection("Exercises").document(exerciseId)
                 .get()
