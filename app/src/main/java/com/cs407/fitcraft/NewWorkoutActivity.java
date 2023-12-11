@@ -76,6 +76,13 @@ public class NewWorkoutActivity extends AppCompatActivity {
         });
 
         newWorkoutDoneBtn = findViewById(R.id.newWorkoutDoneBtn);
+        newWorkoutDoneBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(NewWorkoutActivity.this, FirstPage.class);
+            startActivity(intent);
+            finish();
+        });
+
+
         newWorkoutAddBtn.setOnClickListener(view -> {
             Intent intent = new Intent(NewWorkoutActivity.this, AddExerciseActivity.class);
             exerciseDetailsLauncher.launch(intent);

@@ -1,36 +1,21 @@
 package com.cs407.fitcraft;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ListView;
-
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class FirstPage extends AppCompatActivity {
     Button createButton;
     ArrayList<String> workoutList;
     ListView workoutListView;
-    //ExerciseAdaptor adapter;
     Context context = this;
-
     DatabaseHelper databaseHelper = new DatabaseHelper();
-
-    private RecyclerView recyclerView;
-    //private WorkoutAdaptor adaptor;
-    private List<String> collectionList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +36,6 @@ public class FirstPage extends AppCompatActivity {
 
         context = this;
 
-
         databaseHelper.getWorkoutIdList(new DatabaseHelper.Callback<List<String>>() {
             @Override
             public void onSuccess(List<String> result) {
@@ -64,6 +48,23 @@ public class FirstPage extends AppCompatActivity {
                 Log.e("Workout list", "Error loading workout list", e);
             }
         });
+
+
+//新添加
+//        String workoutId = getIntent().getStringExtra("workoutName");
+//        //exerciseName= databaseHelper.getExerciseName();
+//        if(workoutId==null) workoutId = "TestWorkout";
+//        databaseHelper.getWorkoutName(workoutId, new DatabaseHelper.Callback<String>() {
+//            @Override
+//            public void onSuccess(String result) {
+//                // Enable the Up button
+//            }
+//            @Override
+//            public void onError(Exception e) {
+//                Log.e("Exercise Details", "Error loading exercise", e);
+//            }
+//        });
+
 
     }
 

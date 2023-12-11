@@ -12,7 +12,6 @@ import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
-
 import java.util.List;
 
 // ExerciseAdapter.java
@@ -23,8 +22,6 @@ public class WorkoutPlayAdaptor extends BaseAdapter implements ListAdapter {
     private Activity activity;
     private DatabaseHelper databaseHelper;
     private VideoView videoView;
-
-
 
     public WorkoutPlayAdaptor(List<String> exercises, Activity activity, VideoView videoView) {
         this.exercises = exercises;
@@ -38,7 +35,6 @@ public class WorkoutPlayAdaptor extends BaseAdapter implements ListAdapter {
         this.activity = activity;
         databaseHelper = new DatabaseHelper();
     }
-
 
     @Override
     public int getCount() {

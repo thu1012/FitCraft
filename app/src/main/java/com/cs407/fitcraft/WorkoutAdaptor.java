@@ -11,7 +11,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 public class WorkoutAdaptor extends BaseAdapter implements ListAdapter {
@@ -63,6 +62,9 @@ public class WorkoutAdaptor extends BaseAdapter implements ListAdapter {
         });
 
         Button btn = view.findViewById(R.id.exerciseLayoutBtn);
+
+
+//play button跳转问题
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
