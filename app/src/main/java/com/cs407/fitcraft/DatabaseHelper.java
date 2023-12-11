@@ -1,23 +1,15 @@
 package com.cs407.fitcraft;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
-import android.content.Intent;
-import android.util.Log;
-
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class DatabaseHelper {
-    private FirebaseFirestore db;
+    private final FirebaseFirestore db;
 
     public DatabaseHelper() {
         db = FirebaseFirestore.getInstance();
@@ -43,7 +35,7 @@ public class DatabaseHelper {
         db.collection("Exercises").document(exerciseId)
                 .get()
                 .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()) {
+                    if (task.isSuccessful()) {
                         DocumentSnapshot snapshot = task.getResult();
                         String name = (String) snapshot.get("name");
                         String description = (String) snapshot.get("description");
@@ -60,12 +52,13 @@ public class DatabaseHelper {
         db.collection("Workouts").document(workoutId)
                 .get()
                 .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()) {
+                    if (task.isSuccessful()) {
                         DocumentSnapshot snapshot = task.getResult();
                         String name = (String) snapshot.get("name");
                         String description = (String) snapshot.get("description");
                         List<String> exercises = (List<String>) snapshot.get("exercises");
                         Workout workout = new Workout(name, description, exercises);
+                        System.out.println(workoutId + ":" + workout);
                         callback.onSuccess(workout);
                     } else {
                         callback.onError(task.getException());
@@ -117,12 +110,13 @@ public class DatabaseHelper {
                     }
                 });
     }
+
     //新添加
     public void getWorkoutName(String workoutId, final Callback<String> callback) {
         db.collection("Workouts").document(workoutId)
                 .get()
                 .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()) {
+                    if (task.isSuccessful()) {
                         DocumentSnapshot snapshot = task.getResult();
                         String name = (String) snapshot.get("name");
                         callback.onSuccess(name);
@@ -136,7 +130,7 @@ public class DatabaseHelper {
         db.collection("Exercises").document(exerciseId)
                 .get()
                 .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()) {
+                    if (task.isSuccessful()) {
                         DocumentSnapshot snapshot = task.getResult();
                         String name = (String) snapshot.get("name");
                         callback.onSuccess(name);
@@ -151,6 +145,7 @@ public class DatabaseHelper {
 
     public interface Callback<T> {
         void onSuccess(T result);
+
         void onError(Exception e);
     }
 }
