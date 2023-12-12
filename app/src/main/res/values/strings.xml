@@ -2,4 +2,8 @@
     <string name="app_name">FitCraft</string>
     <string name="your_workouts">Your Workouts</string>
     <string name="craft_workout">Craft Workout</string>
+    <string name="add_to_workout">Add To Workout</string>
+    <string name="change_workout_name_here">Change Workout Name Here</string>
+    <string name="done">Done</string>
+    <string name="add_exercise">Add Exercise</string>
 </resources>

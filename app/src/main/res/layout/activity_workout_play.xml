@@ -8,7 +8,7 @@
     tools:context=".WorkoutPlay">
 
     <TextView
-        android:id="@+id/workOutPlayTextView"
+        android:id="@+id/workoutPlayTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
@@ -24,7 +24,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/workOutPlayTextView" />
+        app:layout_constraintTop_toBottomOf="@id/workoutPlayTextView" />
 
     <ListView
         android:id="@+id/workoutPlayListView"

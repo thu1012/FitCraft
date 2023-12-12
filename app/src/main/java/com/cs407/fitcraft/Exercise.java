@@ -1,11 +1,17 @@
 package com.cs407.fitcraft;
 
+import androidx.annotation.NonNull;
+
 public class Exercise {
-    String name, description, videoUrl, documentName;
-    public Exercise(String name, String description, String videoUrl, String documentName) {
+    String name, description, videoUrl;
+    public Exercise(String name, String description, String videoUrl) {
         this.name = name;
         this.description = description;
         this.videoUrl = videoUrl;
-        this.documentName = documentName;
+    }
+
+    @NonNull
+    public String toString() {
+        return name + "; " + description + "; " + videoUrl;
     }
 }

@@ -113,9 +113,7 @@ public class NewWorkoutActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK) {
-            // Add the exercise name to the list
             exerciseList.add(data.getStringExtra("exerciseName"));
-            // Notify the adapter that the data set has changed
             ((ExerciseAdaptor) exerciseListView.getAdapter()).notifyDataSetChanged();
         }
     }
@@ -123,7 +121,6 @@ public class NewWorkoutActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            // Respond to the action bar's Up/Home button
             Intent intent = new Intent(NewWorkoutActivity.this, FirstPage.class);
             startActivity(intent);
             finish();
