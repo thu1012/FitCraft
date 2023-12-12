@@ -87,7 +87,9 @@ public class ExerciseDetails extends AppCompatActivity {
             databaseHelper.getWorkout(workoutId, new DatabaseHelper.Callback<Workout>() {
                 @Override
                 public void onSuccess(Workout result) {
-                    exercises.addAll(result.exercises);
+                    if (result.exercises != null) {
+                        exercises.addAll(result.exercises);
+                    }
                     exercises.add(exerciseId); // Adding the current exercise ID
 
                     workoutData.put("description", "Self defined workout");
