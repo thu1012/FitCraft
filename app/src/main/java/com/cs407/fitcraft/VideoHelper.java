@@ -13,6 +13,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class VideoHelper {
+    private static VideoHelper currentInstance;
+
     private final VideoView videoView;
     private final DatabaseHelper databaseHelper;
     private final boolean onLoop;
@@ -27,15 +29,7 @@ public class VideoHelper {
         this.onLoop = onLoop;
         this.activity = activity;
         this.databaseHelper = new DatabaseHelper();
-        videoView.setOnPreparedListener(mp -> {
-            mp.setLooping(onLoop);
-            mp.setOnVideoSizeChangedListener((mp1, width, height) -> {
-                MediaController mc = new MediaController(activity);
-                videoView.setMediaController(mc);
-                mc.setAnchorView(videoView);
-                mc.hide();
-            });
-        });
+        initializeVideoView();
     }
 
     public VideoHelper(VideoView videoView, boolean onLoop, ProgressBar progressBar, Activity activity, int position) {
@@ -45,6 +39,10 @@ public class VideoHelper {
         this.activity = activity;
         this.databaseHelper = new DatabaseHelper();
         this.position = position;
+        initializeVideoView();
+    }
+
+    private void initializeVideoView() {
         videoView.setOnPreparedListener(mp -> {
             mp.setLooping(onLoop);
             mp.setOnVideoSizeChangedListener((mp1, width, height) -> {
@@ -57,6 +55,11 @@ public class VideoHelper {
     }
 
     public void setVideo(String exerciseId, Context context) {
+        if (currentInstance != null && currentInstance != this) {
+            currentInstance.pauseVideo();
+        }
+        currentInstance = this;
+
         databaseHelper.getExercise(exerciseId, new DatabaseHelper.Callback<Exercise>() {
             @Override
             public void onSuccess(Exercise result) {
@@ -140,8 +143,11 @@ public class VideoHelper {
     }
 
     public void pauseVideo() {
-        videoView.pause();
-        progressHandler.removeCallbacks(progressRunnable);
-        progressBar = null;
+        if (currentInstance == this) {
+            videoView.pause();
+            progressHandler.removeCallbacks(progressRunnable);
+            progressBar = null;
+            currentInstance = null;
+        }
     }
 }
