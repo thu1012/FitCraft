@@ -140,9 +140,6 @@ public class DatabaseHelper {
                 });
     }
 
-
-    // You can add more methods for other operations like loading videos, etc.
-
     public interface Callback<T> {
         void onSuccess(T result);
 

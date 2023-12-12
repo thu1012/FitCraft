@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">FitCraft</string>
+    <string name="your_workouts">Your Workouts</string>
+    <string name="craft_workout">Craft Workout</string>
 </resources>

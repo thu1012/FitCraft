@@ -1,7 +1,6 @@
 package com.cs407.fitcraft;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -26,19 +25,32 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter, Filtera
     private Context context;
     private String pageName;
     private DatabaseHelper databaseHelper;
-
     private String workoutId;
-
     private String workoutName;
+    private final Map<String, Exercise> exerciseCache = new HashMap<>();
 
     public ExerciseAdaptor(ArrayList<String> exerciseList, Context context, String pageName, String workoutId, String workoutName) {
         this.exerciseList = exerciseList;
         this.filteredList = new ArrayList<>(exerciseList);
         this.context = context;
         this.pageName = pageName;
-        this.databaseHelper = new DatabaseHelper();
         this.workoutId = workoutId;
         this.workoutName = workoutName;
+        this.databaseHelper = new DatabaseHelper();
+        for (String exerciseId : exerciseList) {
+            databaseHelper.getExercise(exerciseId, new DatabaseHelper.Callback<Exercise>() {
+                @Override
+                public void onSuccess(Exercise exercise) {
+                    exerciseCache.put(exerciseId, exercise);
+                    notifyDataSetChanged();
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("ExerciseAdaptor", "Error getting exercise details", e);
+                }
+            });
+        }
     }
 
     @Override
@@ -51,34 +63,60 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter, Filtera
         return isFiltered ? filteredList.get(pos) : exerciseList.get(pos);
     }
 
-    // TODO: this method need to be updated to use exercise id
     @Override
     public long getItemId(int pos) {
         return 0;
     }
 
+    private static class ViewHolder {
+        TextView nameTextView;
+        TextView descriptionTextView;
+        Button btn;
+    }
+
+    @SuppressLint({"InflateParams", "SetTextI18n"})
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view = convertView;
+        ViewHolder holder;
+
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.exercise_layout, null);
+            view = inflater.inflate(R.layout.adaptor_exercise_layout, null);
+            holder = new ViewHolder();
+            holder.nameTextView = view.findViewById(R.id.exerciseLayoutExerciseName);
+            holder.descriptionTextView = view.findViewById(R.id.exerciseLayoutExerciseDescription);
+            holder.btn = view.findViewById(R.id.exerciseLayoutBtn);
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder) view.getTag();
         }
 
-        TextView exercise = view.findViewById(R.id.exerciseLayoutExerciseName);
-        TextView exerciseDescription = view.findViewById(R.id.exerciseLayoutExerciseDescription);
-        String exerciseName = isFiltered ? filteredList.get(position) : exerciseList.get(position);
-        databaseHelper.getExercise(exerciseName, new DatabaseHelper.Callback<Exercise>() {
-            @Override
-            public void onSuccess(Exercise result) {
-                exercise.setText(result.name);
-                exerciseDescription.setText(result.description);
-            }
-            @Override
-            public void onError(Exception e) {
-                Log.e("ExerciseAdaptor", "Error getting exercise", e);
-            }
-        });
+        String exerciseId = isFiltered ? filteredList.get(position) : exerciseList.get(position);
+
+        if (exerciseCache.containsKey(exerciseId)) {
+            Exercise exercise = exerciseCache.get(exerciseId);
+            holder.nameTextView.setText(exercise.name);
+            holder.descriptionTextView.setText(exercise.description);
+        } else {
+            holder.nameTextView.setText("Loading...");
+            holder.descriptionTextView.setText("");
+            databaseHelper.getExercise(exerciseId, new DatabaseHelper.Callback<Exercise>() {
+                @Override
+                public void onSuccess(Exercise exercise) {
+                    exerciseCache.put(exerciseId, exercise);
+                    if (exerciseId.equals((isFiltered ? filteredList.get(position) : exerciseList.get(position)))) {
+                        holder.nameTextView.setText(exercise.name);
+                        holder.descriptionTextView.setText(exercise.description);
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("ExerciseAdaptor", "Error getting exercise details", e);
+                }
+            });
+        }
 
         Button btn = view.findViewById(R.id.exerciseLayoutBtn);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +152,7 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter, Filtera
                             });
 
                         }
+
                         @Override
                         public void onError(Exception e) {
                             Log.e("New Workout", "Failed to retrieve workout exercises", e);
@@ -126,11 +165,6 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter, Filtera
                     intent.putExtra("exerciseName", exerciseList.get(position));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
-                } else if (pageName.equals("firstPage")) {
-                    Intent intent = new Intent(context, WorkoutPlay.class);
-                    intent.putExtra("workoutId", exerciseList.get(position));
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
                 }
             }
         });
@@ -138,8 +172,6 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter, Filtera
             btn.setText("Remove");
         } else if (pageName.equals("addExercise")) {
             btn.setText("Details");
-        } else if (pageName.equals("firstPage")){
-            btn.setText("Play Workout");
         }
         return view;
     }
@@ -156,9 +188,10 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter, Filtera
                 } else {
                     String searchStr = constraint.toString().toLowerCase();
                     ArrayList<String> resultsData = new ArrayList<>();
-                    for (String s : exerciseList) {
-                        if (s.toLowerCase().contains(searchStr)) {
-                            resultsData.add(s);
+                    for (String exerciseId : exerciseList) {
+                        Exercise exercise = exerciseCache.get(exerciseId);
+                        if (exercise != null && exercise.name.toLowerCase().contains(searchStr)) {
+                            resultsData.add(exerciseId);
                         }
                     }
                     results.values = resultsData;
@@ -190,4 +223,3 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter, Filtera
     }
 
 }
-
