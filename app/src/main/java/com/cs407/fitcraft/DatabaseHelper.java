@@ -12,7 +12,7 @@ public class DatabaseHelper {
         db = FirebaseFirestore.getInstance();
     }
 
-    public void loadExercises(final Callback<ArrayList<Exercise>> callback) {
+    public void loadExercises(final Callback<ArrayList<String>> callback) {
         db.collection("Exercises")
                 .get()
                 .addOnCompleteListener(task -> {

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AddExerciseActivity extends AppCompatActivity {
-    ArrayList<Exercise> exerciseList;
+    ArrayList<String> exerciseList;
     ListView exerciseListView;
 
     ExerciseAdaptor adapter;
@@ -42,7 +42,6 @@ public class AddExerciseActivity extends AppCompatActivity {
         loadExercisesFromDatabase();
 
         SearchView searchView = findViewById(R.id.addExerciseSearchView);
-        searchView.requestFocus();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -58,9 +57,9 @@ public class AddExerciseActivity extends AppCompatActivity {
     }
 
     private void loadExercisesFromDatabase() {
-        databaseHelper.loadExercises(new DatabaseHelper.Callback<ArrayList<Exercise>>() {
+        databaseHelper.loadExercises(new DatabaseHelper.Callback<ArrayList<String>>() {
             @Override
-            public void onSuccess(ArrayList<Exercise> result) {
+            public void onSuccess(ArrayList<String> result) {
                 adapter.updateLists(result);
                 adapter.notifyDataSetChanged();
             }
@@ -72,7 +71,7 @@ public class AddExerciseActivity extends AppCompatActivity {
             }
         });
         exerciseListView.setOnItemClickListener((adapterView, view, position, id) -> {
-            String exerciseName = exerciseList.get(position).name;
+            String exerciseName = exerciseList.get(position);
 
             Intent intent = new Intent(AddExerciseActivity.this, ExerciseDetails.class);
             intent.putExtra("exerciseName", exerciseName);
