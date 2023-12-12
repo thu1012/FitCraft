@@ -17,9 +17,8 @@ import java.util.Map;
 
 
 public class ExerciseDetails extends AppCompatActivity {
-    DatabaseHelper databaseHelper = new DatabaseHelper();
-
-    List<String> exercises;
+    private DatabaseHelper databaseHelper;
+    private List<String> exercises;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,28 +28,27 @@ public class ExerciseDetails extends AppCompatActivity {
         String exerciseName = getIntent().getStringExtra("exerciseName");
         if (exerciseName == null) exerciseName = "TestExercise";
 
+        databaseHelper = new DatabaseHelper();
         databaseHelper.getExercise(exerciseName, new DatabaseHelper.Callback<Exercise>() {
             @Override
             public void onSuccess(Exercise result) {
-                // Enable the Up button
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     getSupportActionBar().setTitle(result.name);
                 }
-                TextView textView = findViewById(R.id.sectionTitle);
+                TextView textView = findViewById(R.id.exerciseDetailsTextView);
                 textView.setText(result.description);
             }
 
             @Override
             public void onError(Exception e) {
-                Log.e("Exercise Details", "Error loading exercise", e);
+                Log.e("exercise details", "Error loading exercise", e);
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     getSupportActionBar().setTitle("Default Exercise Name");
                 }
             }
         });
-
 
         VideoView videoView = findViewById(R.id.exerciseDetailsVideoView);
         VideoHelper videoHelper = new VideoHelper(videoView, true, this);
@@ -66,7 +64,6 @@ public class ExerciseDetails extends AppCompatActivity {
         else workoutData.put("name", workoutName);
 
         exercises = new ArrayList<>();
-
         databaseHelper.getWorkout(getIntent().getStringExtra("workoutId"), new DatabaseHelper.Callback<Workout>() {
             @Override
             public void onSuccess(Workout result) {
@@ -83,12 +80,9 @@ public class ExerciseDetails extends AppCompatActivity {
             }
         });
 
-
-        // append the current exercise
         workoutData.put("exercises", exercises);
 
-        // write it to the database
-        Button addButton = findViewById(R.id.addButton);
+        Button addButton = findViewById(R.id.exerciseDetailsButton);
         addButton.setOnClickListener(v -> {
             Log.d("ExerciseDetails", "Add button clicked with exercise: " + finalExerciseName);
             databaseHelper.writeWorkout(workoutData, getIntent().getStringExtra("workoutId"), new DatabaseHelper.Callback<Workout>() {
@@ -107,25 +101,11 @@ public class ExerciseDetails extends AppCompatActivity {
                 }
             });
         });
-
-
-//        addButton.setOnClickListener(v -> {
-//            db.collection("Workouts").document("Workout 2")
-//                    .set(workoutData)
-//                    .addOnSuccessListener(aVoid -> {
-//                        Log.d("ExerciseDetails", "Workout successfully written!");
-//                        Intent intent = new Intent(ExerciseDetails.this, NewWorkoutActivity.class);
-//                        startActivity(intent);
-//                        // Optional: Redirect or perform other actions upon success
-//                    })
-//                    .addOnFailureListener(e -> Log.w("ExerciseDetails", "Error writing workout", e));
-//        });
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            // Respond to the action bar's Up/Home button
             finish();
             return true;
         }

@@ -38,13 +38,13 @@ public class WorkoutPlay extends AppCompatActivity {
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(result.name);
                 }
-                descriptionTextView = findViewById(R.id.workOutPlayTextView);
+                descriptionTextView = findViewById(R.id.workoutPlayTextView);
                 descriptionTextView.setText(result.description);
             }
 
             @Override
             public void onError(Exception e) {
-                Log.e("Workout Play", "Error loading workout exercises", e);
+                Log.e("workout play", "Error loading workout exercises", e);
             }
         });
     }

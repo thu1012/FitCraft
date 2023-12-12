@@ -40,7 +40,7 @@ public class DatabaseHelper {
                         String name = (String) snapshot.get("name");
                         String description = (String) snapshot.get("description");
                         String url = (String) snapshot.get("url");
-                        Exercise exercise = new Exercise(name, description, url, exerciseId);
+                        Exercise exercise = new Exercise(name, description, url);
                         callback.onSuccess(exercise);
                     } else {
                         callback.onError(task.getException());
@@ -67,32 +67,10 @@ public class DatabaseHelper {
     }
 
     public void writeWorkout(Map<String, Object> workoutData, String workoutId, final Callback<Workout> callback) {
-
         db.collection("Workouts").document(workoutId)
                 .set(workoutData)
                 .addOnSuccessListener(aVoid -> callback.onSuccess(null))
                 .addOnFailureListener(callback::onError);
-    }
-
-
-    public void getWorkoutList(final Callback<List<Workout>> callback) {
-        db.collection("Workouts")
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        List<Workout> workoutList = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String id = document.getString("id");
-                            String description = document.getString("description");
-                            List<String> workouts = (List<String>) document.get("workouts");
-                            Workout workout = new Workout(id, description, workouts);
-                            workoutList.add(workout);
-                        }
-                        callback.onSuccess(workoutList);
-                    } else {
-                        callback.onError(task.getException());
-                    }
-                });
     }
 
     public void getWorkoutIdList(final Callback<List<String>> callback) {
@@ -111,41 +89,8 @@ public class DatabaseHelper {
                 });
     }
 
-    //新添加
-    public void getWorkoutName(String workoutId, final Callback<String> callback) {
-        db.collection("Workouts").document(workoutId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot snapshot = task.getResult();
-                        String name = (String) snapshot.get("name");
-                        callback.onSuccess(name);
-                    } else {
-                        callback.onError(task.getException());
-                    }
-                });
-    }
-
-    public void getExerciseName(String exerciseId, final Callback<String> callback) {
-        db.collection("Exercises").document(exerciseId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot snapshot = task.getResult();
-                        String name = (String) snapshot.get("name");
-                        callback.onSuccess(name);
-                    } else {
-                        callback.onError(task.getException());
-                    }
-                });
-    }
-
-
-    // You can add more methods for other operations like loading videos, etc.
-
     public interface Callback<T> {
         void onSuccess(T result);
-
         void onError(Exception e);
     }
 }

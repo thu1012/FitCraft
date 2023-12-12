@@ -71,53 +71,47 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
         });
 
         Button btn = view.findViewById(R.id.exerciseLayoutBtn);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (pageName.equals("newWorkout")) {
-                    // Remove the item from the list
-                    exerciseList.remove(position);
-                    // get the name and description
-                    databaseHelper.getWorkout(workoutId, new DatabaseHelper.Callback<Workout>() {
-                        @Override
-                        public void onSuccess(Workout result) {
-                            String description = result.description;
-                            Map<String, Object> workoutData = new HashMap<>();
-                            workoutData.put("description", description);
-                            workoutData.put("name", workoutName);
-                            workoutData.put("exercises", exerciseList);
-                            databaseHelper.writeWorkout(workoutData, workoutId, new DatabaseHelper.Callback<Workout>() {
-                                @Override
-                                public void onSuccess(Workout result) {
-                                    Log.d("ExerciseRemoved", "Removed Exercise successfully written!");
-                                    Intent intent = new Intent(context, NewWorkoutActivity.class);
-                                    intent.putExtra("workoutId", workoutId);
-                                    intent.putExtra("workoutName", workoutName);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    context.startActivity(intent);
-                                }
+        btn.setOnClickListener(v -> {
+            if (pageName.equals("newWorkout")) {
+                exerciseList.remove(position);
+                databaseHelper.getWorkout(workoutId, new DatabaseHelper.Callback<Workout>() {
+                    @Override
+                    public void onSuccess(Workout result) {
+                        String description = result.description;
+                        Map<String, Object> workoutData = new HashMap<>();
+                        workoutData.put("description", description);
+                        workoutData.put("name", workoutName);
+                        workoutData.put("exercises", exerciseList);
+                        databaseHelper.writeWorkout(workoutData, workoutId, new DatabaseHelper.Callback<Workout>() {
+                            @Override
+                            public void onSuccess(Workout result) {
+                                Intent intent = new Intent(context, NewWorkoutActivity.class);
+                                intent.putExtra("workoutId", workoutId);
+                                intent.putExtra("workoutName", workoutName);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(intent);
+                            }
 
-                                @Override
-                                public void onError(Exception e) {
-                                    Log.e("Workout Play", "Error loading workout exercises", e);
-                                }
-                            });
+                            @Override
+                            public void onError(Exception e) {
+                                Log.e("exercise adaptor", "Error loading workout exercises", e);
+                            }
+                        });
 
-                        }
+                    }
 
-                        @Override
-                        public void onError(Exception e) {
-                            Log.e("New Workout", "Failed to retrieve workout exercises", e);
-                        }
-                    });
-                } else if (pageName.equals("addExercise")) {
-                    Intent intent = new Intent(context, ExerciseDetails.class);
-                    intent.putExtra("workoutId", workoutId);
-                    intent.putExtra("workoutName", workoutName);
-                    intent.putExtra("exerciseName", exerciseList.get(position));
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
-                }
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e("New Workout", "Failed to retrieve workout exercises", e);
+                    }
+                });
+            } else if (pageName.equals("addExercise")) {
+                Intent intent = new Intent(context, ExerciseDetails.class);
+                intent.putExtra("workoutId", workoutId);
+                intent.putExtra("workoutName", workoutName);
+                intent.putExtra("exerciseName", exerciseList.get(position));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
             }
         });
         if (pageName.equals("newWorkout")) {

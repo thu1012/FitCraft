@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public class AddExerciseActivity extends AppCompatActivity {
     private ArrayList<String> exerciseList;
     private ExerciseAdaptor adaptor;
-    private final DatabaseHelper databaseHelper = new DatabaseHelper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +33,8 @@ public class AddExerciseActivity extends AppCompatActivity {
         loadExercisesFromDatabase();
     }
 
-
     private void loadExercisesFromDatabase() {
+        DatabaseHelper databaseHelper = new DatabaseHelper();
         databaseHelper.loadExercises(new DatabaseHelper.Callback<ArrayList<String>>() {
             @Override
             public void onSuccess(ArrayList<String> result) {
@@ -49,7 +48,6 @@ public class AddExerciseActivity extends AppCompatActivity {
                 Log.e("add exercise", "Error loading exercises", e);
             }
         });
-
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
