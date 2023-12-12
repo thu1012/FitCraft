@@ -26,7 +26,7 @@
 
         <activity
             android:name=".NewWorkoutActivity"
-            android:exported="true"
+            android:exported="false"
             android:parentActivityName=".FirstPage"/>
 
         <activity
