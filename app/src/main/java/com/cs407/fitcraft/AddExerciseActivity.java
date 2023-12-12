@@ -69,8 +69,7 @@ public class AddExerciseActivity extends AppCompatActivity {
         databaseHelper.loadExercises(new DatabaseHelper.Callback<ArrayList<String>>() {
             @Override
             public void onSuccess(ArrayList<String> result) {
-                exerciseList.clear();
-                exerciseList.addAll(result);
+                adapter.updateLists(result);
                 adapter.notifyDataSetChanged();
             }
 

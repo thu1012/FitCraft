@@ -65,16 +65,15 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter, Filtera
             view = inflater.inflate(R.layout.exercise_layout, null);
         }
 
-        String item = isFiltered ? filteredList.get(position) : exerciseList.get(position);
         TextView exercise = view.findViewById(R.id.exerciseLayoutExerciseName);
         TextView exerciseDescription = view.findViewById(R.id.exerciseLayoutExerciseDescription);
-        databaseHelper.getExercise(exerciseList.get(position), new DatabaseHelper.Callback<Exercise>() {
+        String exerciseName = isFiltered ? filteredList.get(position) : exerciseList.get(position);
+        databaseHelper.getExercise(exerciseName, new DatabaseHelper.Callback<Exercise>() {
             @Override
             public void onSuccess(Exercise result) {
                 exercise.setText(result.name);
                 exerciseDescription.setText(result.description);
             }
-
             @Override
             public void onError(Exception e) {
                 Log.e("ExerciseAdaptor", "Error getting exercise", e);
