@@ -18,85 +18,101 @@ import java.util.Map;
 public class ExerciseDetails extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     private List<String> exercises;
+    private Map<String, Object> workoutData = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise_details);
 
-        String exerciseName = getIntent().getStringExtra("exerciseName");
-        if (exerciseName == null) exerciseName = "TestExercise";
+        String exerciseId = getIntent().getStringExtra("exerciseId");
+        if (exerciseId == null) {
+            Log.e("ExerciseDetails", "No exercise ID provided");
+            finish(); // Close the activity or display an error message
+            return;
+        }
 
         databaseHelper = new DatabaseHelper();
-        databaseHelper.getExercise(exerciseName, new DatabaseHelper.Callback<Exercise>() {
+        setupExerciseDetails(exerciseId);
+        setupAddButton(exerciseId);
+    }
+
+    private void setupExerciseDetails(String exerciseId) {
+        databaseHelper.getExercise(exerciseId, new DatabaseHelper.Callback<Exercise>() {
             @Override
             public void onSuccess(Exercise result) {
-                if (getSupportActionBar() != null) {
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    getSupportActionBar().setTitle(result.name);
-                }
-                TextView textView = findViewById(R.id.exerciseDetailsTextView);
-                textView.setText(result.description);
+                setTitleAndDescription(result);
+                setupVideoView(exerciseId);
             }
 
             @Override
             public void onError(Exception e) {
-                Log.e("exercise details", "Error loading exercise", e);
-                if (getSupportActionBar() != null) {
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    getSupportActionBar().setTitle("Default Exercise Name");
-                }
+                Log.e("ExerciseDetails", "Error loading exercise", e);
+                displayError();
             }
         });
+    }
 
+    private void setTitleAndDescription(Exercise exercise) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(exercise.name);
+        }
+        TextView textView = findViewById(R.id.exerciseDetailsTextView);
+        textView.setText(exercise.description);
+    }
+
+    private void setupVideoView(String exerciseID) {
         VideoView videoView = findViewById(R.id.exerciseDetailsVideoView);
         VideoHelper videoHelper = new VideoHelper(videoView, true, this);
-        videoHelper.setVideo(exerciseName, this);
+        videoHelper.setVideo(exerciseID, this);
+    }
 
-        String finalExerciseName = exerciseName;
-        Log.d("finalExerciseName", finalExerciseName);
-        Map<String, Object> workoutData = new HashMap<>();
-        workoutData.put("description", "Self defined workout");
+    private void displayError() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Error Loading Exercise");
+        }
+    }
 
-        String workoutName = getIntent().getStringExtra("workoutName");
-        if (workoutName == null) workoutData.put("name", "Default Workout Name");
-        else workoutData.put("name", workoutName);
-
-        exercises = new ArrayList<>();
-        databaseHelper.getWorkout(getIntent().getStringExtra("workoutId"), new DatabaseHelper.Callback<Workout>() {
-            @Override
-            public void onSuccess(Workout result) {
-                Log.i("ExerciseDetail", "Successfully retrieved old exercises");
-                exercises.add(finalExerciseName);
-                if (result.exercises != null) {
-                    exercises.addAll(result.exercises);
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e("New Workout", "Failed to retrieve workout exercises", e);
-            }
-        });
-
-        workoutData.put("exercises", exercises);
-
+    private void setupAddButton(String exerciseId) {
         Button addButton = findViewById(R.id.exerciseDetailsButton);
         addButton.setOnClickListener(v -> {
-            Log.d("ExerciseDetails", "Add button clicked with exercise: " + finalExerciseName);
-            databaseHelper.writeWorkout(workoutData, getIntent().getStringExtra("workoutId"), new DatabaseHelper.Callback<Workout>() {
+            String workoutId = getIntent().getStringExtra("workoutId");
+            String workoutName = getIntent().getStringExtra("workoutName");
+            if (workoutName == null) workoutName = "Default Workout Name";
+
+            exercises = new ArrayList<>();
+            String finalWorkoutName = workoutName;
+            databaseHelper.getWorkout(workoutId, new DatabaseHelper.Callback<Workout>() {
                 @Override
                 public void onSuccess(Workout result) {
-                    Intent intent = new Intent(ExerciseDetails.this, NewWorkoutActivity.class);
-                    intent.putExtra("workoutId", getIntent().getStringExtra("workoutId"));
-                    intent.putExtra("workoutName", getIntent().getStringExtra("workoutName"));
-                    Log.d("ExerciseDetails", "Workout successfully written!");
-                    startActivity(intent);
+                    exercises.addAll(result.exercises);
+                    exercises.add(exerciseId); // Adding the current exercise ID
+
+                    workoutData.put("description", "Self defined workout");
+                    workoutData.put("name", finalWorkoutName);
+                    workoutData.put("exercises", exercises);
+
+                    databaseHelper.writeWorkout(workoutData, workoutId, new DatabaseHelper.Callback<Workout>() {
+                        @Override
+                        public void onSuccess(Workout result) {
+                            Intent intent = new Intent(ExerciseDetails.this, NewWorkoutActivity.class);
+                            intent.putExtra("workoutId", workoutId);
+                            intent.putExtra("workoutName", finalWorkoutName);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Log.e("ExerciseDetails", "Error writing workout", e);
+                        }
+                    });
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    Log.e("Workout Play", "Error loading workout exercises", e);
+                    Log.e("ExerciseDetails", "Failed to retrieve workout exercises", e);
                 }
             });
         });
@@ -111,5 +127,6 @@ public class ExerciseDetails extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
 
 

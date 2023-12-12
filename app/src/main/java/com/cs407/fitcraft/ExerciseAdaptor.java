@@ -120,8 +120,9 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter, Filtera
 
         Button btn = view.findViewById(R.id.exerciseLayoutBtn);
         btn.setOnClickListener(v -> {
+            String selectedExerciseId = isFiltered ? filteredList.get(position) : exerciseList.get(position);
             if (pageName.equals("newWorkout")) {
-                exerciseList.remove(position);
+                exerciseList.remove(selectedExerciseId);
                 databaseHelper.getWorkout(workoutId, new DatabaseHelper.Callback<Workout>() {
                     @Override
                     public void onSuccess(Workout result) {
@@ -155,9 +156,9 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter, Filtera
                 });
             } else if (pageName.equals("addExercise")) {
                 Intent intent = new Intent(context, ExerciseDetails.class);
+                intent.putExtra("exerciseId", selectedExerciseId); // Pass the correct exercise ID
                 intent.putExtra("workoutId", workoutId);
                 intent.putExtra("workoutName", workoutName);
-                intent.putExtra("exerciseName", exerciseList.get(position));
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
