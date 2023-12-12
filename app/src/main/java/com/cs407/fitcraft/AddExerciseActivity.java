@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class AddExerciseActivity extends AppCompatActivity {
     private ArrayList<String> exerciseList;
     private ExerciseAdaptor adaptor;
+    private final DatabaseHelper databaseHelper = new DatabaseHelper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,20 @@ public class AddExerciseActivity extends AppCompatActivity {
         exerciseListView.setAdapter(adaptor);
 
         loadExercisesFromDatabase();
+
+        SearchView searchView = findViewById(R.id.addExerciseSearchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adaptor.getFilter().filter(newText);
+                return true;
+            }
+        });
     }
 
     private void loadExercisesFromDatabase() {
@@ -38,8 +53,7 @@ public class AddExerciseActivity extends AppCompatActivity {
         databaseHelper.loadExercises(new DatabaseHelper.Callback<ArrayList<String>>() {
             @Override
             public void onSuccess(ArrayList<String> result) {
-                exerciseList.clear();
-                exerciseList.addAll(result);
+                adaptor.updateLists(result);
                 adaptor.notifyDataSetChanged();
             }
 
