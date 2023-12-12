@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
@@ -17,8 +19,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
+public class ExerciseAdaptor extends BaseAdapter implements ListAdapter, Filterable {
+    private boolean isFiltered = false;
     private ArrayList<String> exerciseList;
+    private ArrayList<String> filteredList;
     private Context context;
     private String pageName;
     private DatabaseHelper databaseHelper;
@@ -29,6 +33,7 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
 
     public ExerciseAdaptor(ArrayList<String> exerciseList, Context context, String pageName, String workoutId, String workoutName) {
         this.exerciseList = exerciseList;
+        this.filteredList = new ArrayList<>(exerciseList);
         this.context = context;
         this.pageName = pageName;
         this.databaseHelper = new DatabaseHelper();
@@ -38,12 +43,12 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
 
     @Override
     public int getCount() {
-        return exerciseList.size();
+        return isFiltered ? filteredList.size() : exerciseList.size();
     }
 
     @Override
     public Object getItem(int pos) {
-        return exerciseList.get(pos);
+        return isFiltered ? filteredList.get(pos) : exerciseList.get(pos);
     }
 
     // TODO: this method need to be updated to use exercise id
@@ -60,6 +65,7 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
             view = inflater.inflate(R.layout.exercise_layout, null);
         }
 
+        String item = isFiltered ? filteredList.get(position) : exerciseList.get(position);
         TextView exercise = view.findViewById(R.id.exerciseLayoutExerciseName);
         TextView exerciseDescription = view.findViewById(R.id.exerciseLayoutExerciseDescription);
         databaseHelper.getExercise(exerciseList.get(position), new DatabaseHelper.Callback<Exercise>() {
@@ -138,5 +144,51 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
         }
         return view;
     }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new FilterResults();
+                if (constraint == null || constraint.length() == 0) {
+                    results.values = exerciseList;
+                    results.count = exerciseList.size();
+                } else {
+                    String searchStr = constraint.toString().toLowerCase();
+                    ArrayList<String> resultsData = new ArrayList<>();
+                    for (String s : exerciseList) {
+                        if (s.toLowerCase().contains(searchStr)) {
+                            resultsData.add(s);
+                        }
+                    }
+                    results.values = resultsData;
+                    results.count = resultsData.size();
+                }
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                if (constraint == null || constraint.length() == 0) {
+                    isFiltered = false;
+                    filteredList = new ArrayList<>(exerciseList);
+                } else {
+                    isFiltered = true;
+                    filteredList = (ArrayList<String>) results.values;
+                }
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    public void updateLists(ArrayList<String> newExercises) {
+        exerciseList.clear();
+        exerciseList.addAll(newExercises);
+        filteredList.clear();
+        filteredList.addAll(newExercises);
+        isFiltered = false; // Reset the filter
+    }
+
 }
 

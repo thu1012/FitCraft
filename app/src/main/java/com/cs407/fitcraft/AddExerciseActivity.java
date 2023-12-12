@@ -45,9 +45,22 @@ public class AddExerciseActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Add Exercise");
         }
-
         // Now load exercises from database
         loadExercisesFromDatabase();
+
+        SearchView searchView = findViewById(R.id.addExerciseSearchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return true;
+            }
+        });
     }
 
 
