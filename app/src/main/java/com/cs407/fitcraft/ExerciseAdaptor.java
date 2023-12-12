@@ -1,7 +1,6 @@
 package com.cs407.fitcraft;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -18,22 +17,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
-    private ArrayList<String> exerciseList;
-    private Context context;
-    private String pageName;
-    private DatabaseHelper databaseHelper;
-
-    private String workoutId;
-
-    private String workoutName;
+    private final ArrayList<String> exerciseList;
+    private final Context context;
+    private final String pageName;
+    private final String workoutId;
+    private final String workoutName;
+    private final DatabaseHelper databaseHelper;
 
     public ExerciseAdaptor(ArrayList<String> exerciseList, Context context, String pageName, String workoutId, String workoutName) {
         this.exerciseList = exerciseList;
         this.context = context;
         this.pageName = pageName;
-        this.databaseHelper = new DatabaseHelper();
         this.workoutId = workoutId;
         this.workoutName = workoutName;
+        this.databaseHelper = new DatabaseHelper();
     }
 
     @Override
@@ -42,16 +39,14 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
     }
 
     @Override
-    public Object getItem(int pos) {
-        return exerciseList.get(pos);
-    }
+    public Object getItem(int pos) { return exerciseList.get(pos); }
 
-    // TODO: this method need to be updated to use exercise id
     @Override
     public long getItemId(int pos) {
         return 0;
     }
 
+    @SuppressLint({"InflateParams", "SetTextI18n"})
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view = convertView;
@@ -71,7 +66,7 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
 
             @Override
             public void onError(Exception e) {
-                Log.e("ExerciseAdaptor", "Error getting exercise", e);
+                Log.e("exercise adaptor", "Error getting exercise", e);
             }
         });
 
@@ -109,6 +104,7 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
                             });
 
                         }
+
                         @Override
                         public void onError(Exception e) {
                             Log.e("New Workout", "Failed to retrieve workout exercises", e);
@@ -121,11 +117,6 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
                     intent.putExtra("exerciseName", exerciseList.get(position));
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
-                } else if (pageName.equals("firstPage")) {
-                    Intent intent = new Intent(context, WorkoutPlay.class);
-                    intent.putExtra("workoutId", exerciseList.get(position));
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
                 }
             }
         });
@@ -133,10 +124,7 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
             btn.setText("Remove");
         } else if (pageName.equals("addExercise")) {
             btn.setText("Details");
-        } else if (pageName.equals("firstPage")){
-            btn.setText("Play Workout");
         }
         return view;
     }
 }
-

@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 
-
 public class FirstPage extends AppCompatActivity {
     private ListView workoutListView;
     private Context context;
@@ -24,7 +23,7 @@ public class FirstPage extends AppCompatActivity {
         context = this;
         DatabaseHelper databaseHelper = new DatabaseHelper();
 
-        Button createButton = findViewById(R.id.createButton);
+        Button createButton = findViewById(R.id.firstPageButton);
         createButton.setOnClickListener(view -> {
             Intent intent = new Intent(FirstPage.this, NewWorkoutActivity.class);
             startActivity(intent);
@@ -34,7 +33,7 @@ public class FirstPage extends AppCompatActivity {
         databaseHelper.getWorkoutIdList(new DatabaseHelper.Callback<List<String>>() {
             @Override
             public void onSuccess(List<String> result) {
-                workoutListView = findViewById(R.id.ListofWorkouts);
+                workoutListView = findViewById(R.id.firstPageListView);
                 workoutListView.setAdapter(new WorkoutAdaptor(result, context));
             }
 
