@@ -75,7 +75,7 @@ public class WorkoutAdaptor extends BaseAdapter implements ListAdapter {
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.exercise_layout, parent, false);
+            convertView = inflater.inflate(R.layout.adaptor_exercise_layout, parent, false);
             holder = new ViewHolder();
             holder.nameTextView = convertView.findViewById(R.id.exerciseLayoutExerciseName);
             holder.descriptionTextView = convertView.findViewById(R.id.exerciseLayoutExerciseDescription);

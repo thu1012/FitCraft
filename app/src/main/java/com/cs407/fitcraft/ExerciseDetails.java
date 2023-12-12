@@ -1,30 +1,16 @@
 package com.cs407.fitcraft;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.VideoView;
-import android.util.Log;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,16 +26,18 @@ public class ExerciseDetails extends AppCompatActivity {
         setContentView(R.layout.activity_exercise_details);
 
         String exerciseName = getIntent().getStringExtra("exerciseName");
-        if(exerciseName==null) exerciseName = "TestExercise";
+        if (exerciseName == null) exerciseName = "TestExercise";
 
-        databaseHelper.getExerciseName(exerciseName, new DatabaseHelper.Callback<String>() {
+        databaseHelper.getExercise(exerciseName, new DatabaseHelper.Callback<Exercise>() {
             @Override
-            public void onSuccess(String result) {
+            public void onSuccess(Exercise result) {
                 // Enable the Up button
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                    getSupportActionBar().setTitle(result);
+                    getSupportActionBar().setTitle(result.name);
                 }
+                TextView textView = findViewById(R.id.sectionTitle);
+                textView.setText(result.description);
             }
 
             @Override
@@ -64,7 +52,7 @@ public class ExerciseDetails extends AppCompatActivity {
 
 
         VideoView videoView = findViewById(R.id.exerciseDetailsVideoView);
-        VideoHelper videoHelper = new VideoHelper(videoView, true,  this);
+        VideoHelper videoHelper = new VideoHelper(videoView, true, this);
         videoHelper.setVideo(exerciseName, this);
 
         String finalExerciseName = exerciseName;
@@ -73,7 +61,7 @@ public class ExerciseDetails extends AppCompatActivity {
         workoutData.put("description", "Self defined workout");
 
         String workoutName = getIntent().getStringExtra("workoutName");
-        if (workoutName==null) workoutData.put("name", "Default Workout Name");
+        if (workoutName == null) workoutData.put("name", "Default Workout Name");
         else workoutData.put("name", workoutName);
 
         exercises = new ArrayList<>();
@@ -83,7 +71,7 @@ public class ExerciseDetails extends AppCompatActivity {
             public void onSuccess(Workout result) {
                 Log.i("ExerciseDetail", "Successfully retrieved old exercises");
                 exercises.add(finalExerciseName);
-                if (result.exercises!=null) {
+                if (result.exercises != null) {
                     exercises.addAll(result.exercises);
                 }
             }

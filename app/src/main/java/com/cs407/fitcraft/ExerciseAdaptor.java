@@ -52,7 +52,7 @@ public class ExerciseAdaptor extends BaseAdapter implements ListAdapter {
         View view = convertView;
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.exercise_layout, null);
+            view = inflater.inflate(R.layout.adaptor_exercise_layout, null);
         }
 
         TextView exercise = view.findViewById(R.id.exerciseLayoutExerciseName);
