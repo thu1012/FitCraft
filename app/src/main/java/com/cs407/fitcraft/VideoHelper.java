@@ -9,10 +9,6 @@ import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.VideoView;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -89,14 +85,11 @@ public class VideoHelper {
         StorageReference httpsReference = firebaseStorage.getReferenceFromUrl(exercise.videoUrl);
 
         httpsReference.getDownloadUrl()
-                .addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Uri> task) {
-                        if (task.isSuccessful()) {
-                            setVideoHelper(task.getResult(), context);
-                        } else {
-                            Log.e("video helper", "Error downloading video", task.getException());
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        setVideoHelper(task.getResult(), context);
+                    } else {
+                        Log.e("video helper", "Error downloading video", task.getException());
                     }
                 });
     }
